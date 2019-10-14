@@ -1,0 +1,15 @@
+Windows RegistryEditor Version 5.00
+ 
+[HKEY_CLASSES_ROOT\xxxClient]
+@="xxxClientProtocol"
+"URLProtocol"=""
+ 
+[HKEY_CLASSES_ROOT\xxxClient\DefaultIcon]
+@="C:\\ xxx_Client\\client.bat,1"
+ 
+[HKEY_CLASSES_ROOT\xxxClient\shell]
+ 
+[HKEY_CLASSES_ROOT\xxxClient\shell\open]
+ 
+[HKEY_CLASSES_ROOT\xxxClient\shell\open\command]
+@="\"C:\\xxx_Client\\client.bat\" \"%1\""
