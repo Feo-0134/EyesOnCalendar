@@ -257,8 +257,8 @@ export default {
                     console.log(response.data)
                     if(!(this.podSelect) && this.manualLoginBtn) {
                         this.displayName = response.data.name
-                        if(response.data.principal == 'TM' || response.data.principal == 'TA') this.admin = true 
                     }
+                    if(response.data.principal == 'TM' || response.data.principal == 'TA') { this.admin = true } 
                     if(response.data.pod == "default") {                            
                         store.set('user', {displayName:this.displayName, alias: this.alias, admin: this.admin, su: this.su, title: this.title, team: 'TEMPLATE'})
                     } else {
