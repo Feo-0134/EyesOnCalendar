@@ -21,6 +21,8 @@ const upload = multer({ dest: 'uploads/' })
 
 require('dotenv').config()
 
+const getTeamName = require('./services/getTeamName.js')
+
 // const variable here
 const errorMsg = 'Record not found'
 
@@ -48,78 +50,13 @@ router.use(bodyParser())
  */
 
 /* API return teamName (for smart router) */
-router.get('/getpod/:year/:month/:alias', async (ctx) => {
-  var p = ctx.params
-  var flag = 0
-  var podName = 'default'
-  var name = 'default'
-  var principle = 'default'
-  var monthRecord = await Month.find({ year: p.year, month: p.month })
-  monthRecord.forEach((month) => {
-    month.people.forEach((person) => {
-      if (person.alias === p.alias) {
-        flag = 1
-        name = person.name
-        principle = person.principle
-      }
-    })
-    if (flag === 1) { podName = month.pod; flag = 0 }
-  })
-  ctx.body = { pod: podName, name: name, principle: principle }
-})
+router.get('/getpod/:year/:month/:alias', getTeamName.routerTeamName)
 
 /* API return teamName (for autocomplete when pick teamName) */
-router.get('/:pod/:year/:month/ownTeamName/:alias', async (ctx) => {
-  var p = ctx.params
-  try {
-    var result = await Month.find({ year: p.year, month: p.month })
-    if (result == null) {
-      throw (errorMsg)
-    } else {
-      // eslint-disable-next-line no-array-constructor
-      var linkList = new Array()
-      linkList.push({ value: 'TEMPLATE', link: '/TEMPLATE/' + p.year + '/' + p.month })
-      // eslint-disable-next-line no-array-constructor
-      var resultRecord = new Array()
-      result.forEach(record => {
-        record.people.forEach(person => {
-          if (person.alias === p.alias) { resultRecord.push(record) }
-        })
-      })
-      resultRecord.forEach(record => {
-        linkList.push({ value: record.pod, link: '/' + record.pod + '/' + p.year + '/' + p.month })
-      })
-      ctx.body = linkList
-      console.log(linkList)
-    }
-  } catch (e) {
-    ctx.status = 404
-    ctx.body = e
-    console.log(e)
-  }
-})
+router.get('/:pod/:year/:month/ownTeamName/:alias', getTeamName.listTeamName)
 
 /* API return all team name data for su */
-router.get('/:pod/:year/:month/allTeamName', async (ctx) => {
-  var p = ctx.params
-  try {
-    var result = await Month.find({ year: p.year, month: p.month })
-    if (result == null) {
-      throw (errorMsg)
-    } else {
-      // eslint-disable-next-line no-array-constructor
-      var linkList = new Array()
-      result.forEach(element => {
-        linkList.push({ value: element.pod, link: '/' + element.pod + '/' + p.year + '/' + p.month })
-        ctx.body = linkList
-      })
-    }
-  } catch (e) {
-    ctx.status = 404
-    ctx.body = e
-    console.log(e)
-  }
-})
+router.get('/:pod/:year/:month/allTeamName', getTeamName.listAllTeamName)
 
 /* ##################################################
  * CURD Operations with the person record and dayType
@@ -449,6 +386,10 @@ app
 // catch all for Vue app
   .use(async ctx => { await send(ctx, 'index.html', { root: path.resolve(__dirname, staticPath) }) })
 
-server.listen(process.env.PORT || 3030, () => {
-  console.log('Listening on ' + (process.env.PORT || 3030))
-})
+function startServer () {
+  server.listen(process.env.PORT || 3030, () => {
+    console.log('Listening on ' + (process.env.PORT || 3030))
+  })
+}
+
+exports.startServer = startServer
