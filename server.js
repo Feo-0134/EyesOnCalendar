@@ -10,10 +10,6 @@ const multer = require('koa-multer')
 const send = require('koa-send')
 const upload = multer({ dest: 'uploads/' })
 const path = require('path')
-// const fs = require('fs')
-// const json = require('./newConvertCsv.js')
-// const models = require('./models/NewMonth')
-// const Month = models.Month
 
 require('dotenv').config()
 
@@ -61,6 +57,9 @@ router.get('/:pod/:year/:month/allTeamName', getTeamName.listAllTeamName)
 /* API to get a certain month data */
 router.get('/:pod/:year/:month', updateRecords.getMonth)
 
+/* API to remove a certain month data */
+router.get('/:pod/:year/:month/remove', updateRecords.rmMonth)
+
 /* API for update employee dayType
  * Update one dayType of one person each time
  */
@@ -80,9 +79,6 @@ router.post('/:pod/:year/:month/person',
   upload.any('csv'), bodyParser(), updateRecords.addPerson)
 
 /* API to delete records from a given month with given alias
- *
- * json raw request.body
- *        {"alias":"apac"}
  */
 router.post('/:pod/:year/:month/delete',
   bodyParser(), updateRecords.removePerson)

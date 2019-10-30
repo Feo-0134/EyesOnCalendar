@@ -156,6 +156,25 @@ const getMonth = async (ctx) => {
   }
 }
 
+const rmMonth = async (ctx) => {
+  var p = ctx.params
+  try {
+    var result =
+     await Month.findOne({ year: p.year, month: p.month, pod: p.pod })
+    if (result == null) {
+      ctx.body = 'month not found'
+      return
+    } else {
+      await Month.deleteOne({ year: p.year, month: p.month, pod: p.pod })
+      ctx.body = 'month removed'
+    }
+  } catch (e) {
+    ctx.status = 404
+    ctx.body = e
+    console.log(e)
+  }
+}
+
 const updateDayType = async (ctx) => {
   var p = ctx.params
   var b = ctx.request.body
@@ -296,7 +315,6 @@ const initCalendar = async (ctx) => {
   var b = ctx.request.body
   var people =
   await modifyTemplate(Number(p.year), Number(p.month), b.people)
-
   // eslint-disable-next-line no-array-constructor
   var daylock = new Array()
   var payload = newMonth(p.year, p.month, p.pod, daylock, people)
@@ -312,6 +330,7 @@ const initCalendar = async (ctx) => {
 
 const updateRecords = {
   getMonth: getMonth,
+  rmMonth: rmMonth,
   updateDayType: updateDayType,
   updateDayTypeBatch: updateDayTypeBatch,
   addPerson: addPerson,
