@@ -62,8 +62,8 @@ const listAllTeamName = async (ctx) => {
       var linkList = new Array()
       result.forEach(element => {
         linkList.push({ value: element.pod, link: '/' + element.pod + '/' + p.year + '/' + p.month })
-        ctx.body = linkList
       })
+      ctx.body = linkList
     }
   } catch (e) {
     ctx.status = 404
