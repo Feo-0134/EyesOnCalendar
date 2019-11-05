@@ -1,5 +1,5 @@
 <template>
-  <div unselectable="on" v-bind:style="{'background-color': getColor(), 'border-color': getBorderColor()}"  class="cellx workday"  v-on:click="toggle" >
+  <div unselectable="on" v-bind:style="{'background-color': getColor(), 'border-color': getBorderColor()}" :class="{'special':today ,'cellx': true, 'workday': true}"  v-on:click="toggle" >
     {{displayValue}}
   </div>
 </template>
@@ -11,7 +11,16 @@ export default {
   data() {
     return {
       open:false, // sign to open opertation panel
+      today: false,
+      month: this.$router.currentRoute.path.split('/')[3],
     };
+  },
+  mounted() {
+      var month = new Date().getMonth() + 1
+      var date = new Date().getDate()
+      if(month === this.month || date === this.day.day) {
+        this.today = true
+      }
   },
   methods: {
     /* get color */
@@ -149,6 +158,11 @@ export default {
   margin: 0px;
   padding: 1px;
   border: 3px solid;
+}
+
+.special.cellx.workday.dayCell {
+    border-left: 5px solid #409eff;
+    width: 35px !important;
 }
 
 @media only screen and (max-width: 1600px) {
