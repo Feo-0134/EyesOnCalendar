@@ -137,6 +137,15 @@ export default {
           console.log(e);
           this.socket = null;
           this.message = 'Month not found';
+          if(this.admin) {
+            this.$notify.info({
+              title: '',
+              dangerouslyUseHTMLString: true,
+              message: '<h3>Click to Init Calendar</h3><div><button class="customizedInitBtn" >Confirm</button></div>',
+              duration:0,
+              position: 'top-left',
+            });
+          }
           return null;
         }
       },
@@ -451,6 +460,23 @@ export default {
 <style>
 .tablehead {
   width: 100%;
+}
+
+.customizedInitBtn {
+  margin: auto;
+  height: 35px;
+  width: 65px;
+  color:#000;
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid #808080;
+  outline: none;
+}
+
+button.customizedInitBtn:hover {
+  color:rgba(64, 158, 255, 20);
+  border: 1px solid rgba(64, 158, 255, 20);
+  outline: none;
 }
 
 .sticky {
