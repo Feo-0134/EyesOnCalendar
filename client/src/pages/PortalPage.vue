@@ -440,7 +440,7 @@ export default {
                         this.month.people[data.indexes.p].days[data.indexes.d].workType =
                         data.workType;
                     });
-                    if(res.data) {
+                    if(res.data.people) {
                         res.data.people = res.data.people.sort((x, y) => x.name.localeCompare(y.name));
                         res.data.people.forEach(person=> {
                             if(person.principle == 'TM') { globalform.TeamManager += person.name + person.alias + ';'}
@@ -465,6 +465,8 @@ export default {
                         //
                     }else if(((error.toString()).split(':')[1]).match('404') == '404') {
                         this.addFeedback('notify', 'Sorry, we didn\'t find your team data of this month. Please initiate your team & calendar first.')
+                    }else if(((error.toString()).split(':')[1]).match('undefined') == 'undefined' ) {
+                        //
                     }else if(((error.toString()).split(':')[1]).match('sort') == 'sort' ) {
                         //
                     }
