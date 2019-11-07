@@ -235,7 +235,7 @@ day {
   justify-content: center;
 }
 .pickRow {
-  border: 2px solid #409eff;
+  border: 2px solid #409effa1;
 }
 .row:hover:not(:first-child) {
     background: #444;
