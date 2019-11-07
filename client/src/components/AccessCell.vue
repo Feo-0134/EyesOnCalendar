@@ -209,11 +209,14 @@ export default {
             {
                 this.su = true
             } 
-
-            if( jsonresult.jobTitle.match('TECHNICAL ADVISOR') == 'TECHNICAL ADVISOR'
-                || jsonresult.jobTitle.match('TECH ADVISOR') == 'TECH ADVISOR'
-                || jsonresult.jobTitle.match('MGR') == 'MGR'
-                || jsonresult.jobTitle.match('MANAGER') == 'MANAGER'
+            if(jsonresult.jobTitle == null) {
+                console.log("null jobTitle" + jsonresult);
+                this.title = 'Support Engineer'
+            }
+            else if( this.title.match('TECHNICAL ADVISOR') == 'TECHNICAL ADVISOR'
+                || this.title.match('TECH ADVISOR') == 'TECH ADVISOR'
+                || this.title.match('MGR') == 'MGR'
+                || this.title.match('MANAGER') == 'MANAGER'
                 || jsonresult.userPrincipalName == 'jianalu@microsoft.com'
                 || jsonresult.userPrincipalName == 't-junzhu@microsoft.com'
                 || jsonresult.userPrincipalName == 'danzha@microsoft.com'
