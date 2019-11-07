@@ -18,7 +18,7 @@
               <i class="el-icon-document-add"></i>
               </template>
                 <h4 style="color: azure" >Click to Init Calendar</h4>
-              <el-button @click="init()">Start</el-button>
+              <el-button @click="extendCalendar()">Start</el-button>
             </el-submenu>
           </el-menu>
           <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
@@ -63,7 +63,7 @@
         </h1>
       </div>
 
-      <h2 v-if="!month">{{message}}</h2>
+      <h2 v-if="!month" v-loading="loading" class="noMonth">{{message}}</h2>
       <!-- <button v-if="!month" class = "button"
         :class="{buttonBackground: initUndo}" v-on:click="init">
         Init Table
@@ -72,7 +72,7 @@
         :class="{buttonBackground: !initUndo}" v-on:click="reload">
         Reload Table
       </button> -->
-      <div  v-if="month">
+      <div  v-if="month" >
           <!-- <el-tabs id="rolesTabview" v-model="activeName" @tab-click="handleClick">
             <el-tab-pane class="mainPanel" label="All Members" name="first"> -->
               <div id="All_Members" v-show="allMember" class="mainPanel" >
@@ -160,6 +160,7 @@ export default {
       allMember: true,
       fteMember: false,
       vendorMember: false,
+      loading:false,
     };
   },
   asyncComputed: {
@@ -183,15 +184,6 @@ export default {
           console.log(e);
           this.socket = null;
           this.message = 'Month not found';
-          if(this.admin) {
-            this.$notify.info({
-              title: '',
-              dangerouslyUseHTMLString: true,
-              message: '<h3>Click to Init Calendar</h3><div><button class="customizedInitBtn" >Confirm</button></div>',
-              duration:0,
-              position: 'top-left',
-            });
-          }
           return null;
         }
       },
@@ -486,8 +478,24 @@ export default {
     handleClick(tab, event) {
       // console.log(tab, event);
     },
+    handleOpen(key, keyPath) {
+        console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
     extendCalendar() {
-      
+      try{
+        this.loading = true
+        // console.log("/"+this.teamName+"/extendCalendar/"+this.$router.currentRoute.path.split('/')[2]+'/'+this.$router.currentRoute.path.split('/')[3])
+        this.$http.post("/api/"+this.teamName+"/extendCalendar/"+this.$router.currentRoute.path.split('/')[2]+'/'+this.$router.currentRoute.path.split('/')[3])
+        setTimeout(() => {
+          location.reload();
+          this.loading = false
+        }, 7000);
+      }catch(e){
+
+      }
     }
     // callUndo(ev) {
     //   if (ev.code !== "KeyZ" || ev.ctrlKey !== true) return;
@@ -507,7 +515,11 @@ export default {
 </script>
 
 <style>
+.noMonth {
+  min-height: 600px;
+}
 .welcome {
+  margin-top: 80px;
   margin-left: 300px;
 }
 .tablehead {
@@ -641,5 +653,8 @@ button.customizedInitBtn:hover {
   height: 40px;
   justify-content: center;
   margin-left: 100px;
+}
+.el-loading-mask {
+    background-color:#262626
 }
 </style>

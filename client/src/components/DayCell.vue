@@ -18,7 +18,10 @@ export default {
   mounted() {
       var month = new Date().getMonth() + 1
       var date = new Date().getDate()
-      if(month === this.month || date === this.day.day) {
+
+      if(month == this.month && date == this.day.day) {
+        console.log("target:" + month + '/' + date)
+        console.log("this:" + this.month + '/' + this.day.day)
         this.today = true
       }
   },
