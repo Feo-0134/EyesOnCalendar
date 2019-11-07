@@ -331,9 +331,11 @@ const initCalendar = async (ctx) => {
 const extendCalendar = async (ctx) => {
   var p = ctx.params
   try {
-    var lastMonth = p.month - 1
+    // (new Date().getMonth() + 2) % 12 ? (new Date().getMonth() + 2) % 12 : 12;
+    var lastMonth = (p.month - 1) % 12 ? (p.month - 1) % 12 : 12
+    var lastYear = lastMonth === 12 ? p.year : p.year - 1
     var currentMonth =
-      await Month.findOne({ year: p.year, month: lastMonth, pod: p.pod })
+      await Month.findOne({ year: lastYear, month: lastMonth, pod: p.pod })
     console.log(currentMonth)
     var people =
       await modifyTemplate(Number(p.year), Number(p.month), currentMonth.people)

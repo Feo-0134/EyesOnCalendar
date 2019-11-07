@@ -5,8 +5,36 @@
           <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
             <el-submenu index="1">
               <template slot="title">
-                <i class="el-icon-location"></i>
-                <span slot="title">Navigator</span>
+                <i class="el-icon-question"></i>
+              </template>
+              <p style="color: azure">Please email to eyesoncalendar2@microsoft.com</p>
+              <p style="color: azure">for any question or further support.</p>
+              <a href="mailto:eyesoncalendar2@microsoft.com"><img class = "outlookLogo2" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+            </el-submenu>
+          </el-menu>
+          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
+            <el-submenu index="1">
+              <template slot="title">
+              <i class="el-icon-document-add"></i>
+              </template>
+                <h4 style="color: azure" >Click to Init Calendar</h4>
+              <el-button @click="init()">Start</el-button>
+            </el-submenu>
+          </el-menu>
+          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
+            <el-submenu index="1">
+              <template slot="title">
+                <i class="el-icon-menu"></i>
+              </template>
+                <el-button @click="allMember = true;fteMember = false;vendorMember = false;">All Member</el-button>
+                <el-button @click="allMember = false;fteMember = true;vendorMember = false;">FTE Member</el-button>
+                <el-button @click="allMember = false;fteMember = false;vendorMember = true;">Vendor Member</el-button>
+            </el-submenu>
+          </el-menu>
+          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
+            <el-submenu index="1">
+              <template slot="title">
+                <i class="el-icon-search"></i>
               </template>
               <el-dropdown>
                 <span>
@@ -23,24 +51,6 @@
                 <el-button type="primary" v-show="admin" @click="goPortal()">Portal</el-button>
               </el-dropdown>
             </el-submenu>
-          </el-menu>
-          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
-            <el-menu-item index="1">
-              <i class="el-icon-menu"></i>
-              <span slot="title">Navigator Two</span>
-            </el-menu-item>
-          </el-menu>
-          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
-            <el-menu-item index="1" disabled>
-              <i class="el-icon-document"></i>
-              <span slot="title">Navigator Three</span>
-            </el-menu-item>
-          </el-menu>
-          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
-            <el-menu-item index="1">
-              <i class="el-icon-setting"></i>
-              <span slot="title">Navigator Four</span>
-            </el-menu-item>
           </el-menu>
       </div>
       </div>
@@ -63,8 +73,9 @@
         Reload Table
       </button> -->
       <div  v-if="month">
-          <el-tabs id="rolesTabview" v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane class="mainPanel" label="All Members" name="first">
+          <!-- <el-tabs id="rolesTabview" v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane class="mainPanel" label="All Members" name="first"> -->
+              <div id="All_Members" v-show="allMember" class="mainPanel" >
                <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
                <div class="name"></div>
                <div v-for="(p,index) in month.people[0].days"
@@ -78,8 +89,10 @@
               <person  v-for="(p,index) in month.people" :key="p._id"
               :pindex="index" :person="p"  v-show="p.principle != 'TM' " :userName="displayName"
               :openflag = "openflag" @opensync = "handleOpenPanel"/>
-            </el-tab-pane>
-            <el-tab-pane class="mainPanel" label="FTE Members" name="second">
+              </div>
+            <!-- </el-tab-pane> -->
+            <!-- <el-tab-pane class="mainPanel" label="FTE Members" name="second"> -->
+              <div id="FTE_Members" v-show="fteMember" class="mainPanel">
               <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
                 <div class="name"></div>
                 <div v-for="(p,index) in month.people[0].days"
@@ -93,8 +106,10 @@
               <person  v-for="(p,index) in month.people" v-show="p.role == 'FTE' && p.principle != 'TM' "
               :key="p._id" :pindex="index" :person="p" :userName="displayName"
               :openflag = "openflag" @opensync = "handleOpenPanel"/>
-            </el-tab-pane>
-            <el-tab-pane class="mainPanel" label="Vendor Members" name="third">
+              </div>
+            <!-- </el-tab-pane> -->
+            <!-- <el-tab-pane class="mainPanel" label="Vendor Members" name="third"> -->
+              <div id="Vendor_Members" v-show="vendorMember" class="mainPanel">
                <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
                 <div class="name"></div>
                 <div v-for="(p,index) in month.people[0].days"
@@ -108,13 +123,14 @@
               <person  v-for="(p,index) in month.people" v-show="p.role =='Vendor'"
               :key="p._id" :pindex="index" :person="p" :userName="displayName"
               :openflag = "openflag" @opensync = "handleOpenPanel"/>
-            </el-tab-pane>
-          </el-tabs>
+              </div>
+            <!-- </el-tab-pane> -->
+          <!-- </el-tabs> -->
       </div>
       <!-- <transition name="fade">
         <loading v-if="isLoading"></loading>
       </transition> -->
-      <HelpScreen />
+      <!-- <HelpScreen /> -->
   </div>
 </template>
 
@@ -141,6 +157,9 @@ export default {
       openflag: false,
       state: null,
       teamName: this.$router.currentRoute.path.split('/')[1],
+      allMember: true,
+      fteMember: false,
+      vendorMember: false,
     };
   },
   asyncComputed: {
@@ -467,6 +486,9 @@ export default {
     handleClick(tab, event) {
       // console.log(tab, event);
     },
+    extendCalendar() {
+      
+    }
     // callUndo(ev) {
     //   if (ev.code !== "KeyZ" || ev.ctrlKey !== true) return;
     //   else if (this.$history.length == 0) return;
@@ -581,6 +603,7 @@ button.customizedInitBtn:hover {
   visibility: hidden;
 }
 .mainPanel {
+  margin-top: 100px;
   min-height: 800px;
   min-width: fit-content;
 }
@@ -606,5 +629,17 @@ button.customizedInitBtn:hover {
   cursor: pointer;
   float: right;
   border-right: solid 1px #252524 !important;
+}
+
+.el-menu.el-menu--horizontal {
+    border-right: solid 1px #252524 !important;
+    border-bottom:none !important;
+}
+
+.outlookLogo2 {
+  width: 70px;
+  height: 40px;
+  justify-content: center;
+  margin-left: 100px;
 }
 </style>
