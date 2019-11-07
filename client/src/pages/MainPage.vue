@@ -2,37 +2,64 @@
   <div>
       <div class = "head">
         <div class="testClass">
-          <el-dropdown>
-            <span>
-                <el-autocomplete
-                  v-model="teamName"
-                  :fetch-suggestions="querySearchAsync"
-                  placeholder="SEARCH POD"
-                  @select="handleSelect"
-                >
-                </el-autocomplete>
-            </span>
-          </el-dropdown>
-          <el-dropdown>
-            <el-button type="primary" v-show="admin" @click="goPortal()">Portal</el-button>
-          </el-dropdown>
-        </div>
+          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
+            <el-submenu index="1">
+              <template slot="title">
+                <i class="el-icon-location"></i>
+                <span slot="title">Navigator</span>
+              </template>
+              <el-dropdown>
+                <span>
+                    <el-autocomplete
+                      v-model="teamName"
+                      :fetch-suggestions="querySearchAsync"
+                      placeholder="SEARCH POD"
+                      @select="handleSelect"
+                    >
+                    </el-autocomplete>
+                </span>
+              </el-dropdown>
+              <el-dropdown>
+                <el-button type="primary" v-show="admin" @click="goPortal()">Portal</el-button>
+              </el-dropdown>
+            </el-submenu>
+          </el-menu>
+          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
+            <el-menu-item index="1">
+              <i class="el-icon-menu"></i>
+              <span slot="title">Navigator Two</span>
+            </el-menu-item>
+          </el-menu>
+          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
+            <el-menu-item index="1" disabled>
+              <i class="el-icon-document"></i>
+              <span slot="title">Navigator Three</span>
+            </el-menu-item>
+          </el-menu>
+          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
+            <el-menu-item index="1">
+              <i class="el-icon-setting"></i>
+              <span slot="title">Navigator Four</span>
+            </el-menu-item>
+          </el-menu>
       </div>
-      <div class="testClassII welcome">
+      </div>
+      <div class="welcome">
         <p>Welcome, {{displayName}} {{displayTitle}}</p>
+        <h1>
+          <a :href="prevMonth" class="pointer">&lt;</a>
+          {{prettyDate}}
+          <a :href="nextMonth" class="pointer">&gt;</a>
+        </h1>
       </div>
-      <h1>
-        <a :href="prevMonth" class="pointer">&lt;</a>
-        {{prettyDate}}
-        <a :href="nextMonth" class="pointer">&gt;</a>
-      </h1>
+
       <h2 v-if="!month">{{message}}</h2>
       <!-- <button v-if="!month" class = "button"
-      :class="{buttonBackground: initUndo}" v-on:click="init">
+        :class="{buttonBackground: initUndo}" v-on:click="init">
         Init Table
       </button>
       <button v-if="!month" class = "button"
-      :class="{buttonBackground: !initUndo}" v-on:click="reload">
+        :class="{buttonBackground: !initUndo}" v-on:click="reload">
         Reload Table
       </button> -->
       <div  v-if="month">
@@ -84,10 +111,10 @@
             </el-tab-pane>
           </el-tabs>
       </div>
-      <help-screen />
       <!-- <transition name="fade">
         <loading v-if="isLoading"></loading>
       </transition> -->
+      <HelpScreen />
   </div>
 </template>
 
@@ -458,6 +485,9 @@ export default {
 </script>
 
 <style>
+.welcome {
+  margin-left: 300px;
+}
 .tablehead {
   width: 100%;
 }
@@ -508,8 +538,8 @@ button.customizedInitBtn:hover {
 
 .testClass {
   margin-right: 40px;
-    margin-bottom: 55px;
-    text-align:right;
+  margin-bottom: 55px;
+  text-align:right;
 
 }
 .testClassII {
@@ -551,7 +581,7 @@ button.customizedInitBtn:hover {
   visibility: hidden;
 }
 .mainPanel {
-  min-height: 1000px;
+  min-height: 800px;
   min-width: fit-content;
 }
 .el-input-group--append .el-input__inner, .el-input-group__prepend {
@@ -566,5 +596,15 @@ button.customizedInitBtn:hover {
 .el-autocomplete .el-input__inner {
     background-color: #262626;
     border: 1px solid #808080;
+}
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
+.el-menu {
+  background-color: #252524;
+  cursor: pointer;
+  float: right;
+  border-right: solid 1px #252524 !important;
 }
 </style>
