@@ -1,68 +1,56 @@
 <template>
-  <div>
-      <div class = "head">
-        <div class="testClass">
-          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
-            <el-submenu index="1">
-              <template slot="title">
-                <i class="el-icon-question"></i>
-              </template>
-              <p style="color: azure">Please email to eyesoncalendar2@microsoft.com</p>
-              <p style="color: azure">for any question or further support.</p>
-              <a href="mailto:eyesoncalendar2@microsoft.com"><img class = "outlookLogo2" src="../../static/img/outlook.png"  alt="Outlook" /></a>
-            </el-submenu>
-          </el-menu>
-          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
-            <el-submenu index="1">
-              <template slot="title">
-              <i class="el-icon-document-add"></i>
-              </template>
-                <h4 style="color: azure" >Click to Init Calendar</h4>
-              <el-button @click="extendCalendar()">Start</el-button>
-            </el-submenu>
-          </el-menu>
-          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
-            <el-submenu index="1">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-              </template>
-                <el-button @click="allMember = true;fteMember = false;vendorMember = false;">All Member</el-button>
-                <el-button @click="allMember = false;fteMember = true;vendorMember = false;">FTE Member</el-button>
-                <el-button @click="allMember = false;fteMember = false;vendorMember = true;">Vendor Member</el-button>
-            </el-submenu>
-          </el-menu>
-          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"  :collapse="true">
+  <el-container>
+      <el-aside width="65px">
+          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :default-openeds="['2']" :collapse="true">
             <el-submenu index="1">
               <template slot="title">
                 <i class="el-icon-search"></i>
               </template>
-              <el-dropdown>
                 <span>
                     <el-autocomplete
                       v-model="teamName"
                       :fetch-suggestions="querySearchAsync"
                       placeholder="SEARCH POD"
                       @select="handleSelect"
+                      :autofocus="true"
                     >
                     </el-autocomplete>
                 </span>
-              </el-dropdown>
-              <el-dropdown>
-                <el-button type="primary" v-show="admin" @click="goPortal()">Portal</el-button>
-              </el-dropdown>
             </el-submenu>
-          </el-menu>        
+            <el-submenu index="2">
+              <template slot="title">
+                <i class="el-icon-view"></i>
+              </template>
+                <el-button @click="allMember = true;fteMember = false;vendorMember = false;">All Member</el-button>
+                <el-button @click="allMember = false;fteMember = true;vendorMember = false;">FTE Member</el-button>
+                <el-button @click="allMember = false;fteMember = false;vendorMember = true;">Vendor Member</el-button>
+            </el-submenu>
+            <el-submenu index="3">
+              <template slot="title">
+              <i class="el-icon-more"></i>
+              </template>
+                <h4 style="margin-left:10px; color: azure;font-family: sans-serif;" >More Tools</h4>
+              <!-- <el-tooltip v-show="admin" class="item" effect="light" content="Click to Init Calendar" placement="right">
+              <el-button  icon="el-icon-plus" @click="extendCalendar()"></el-button>
+              </el-tooltip> -->
+              <el-tooltip v-show="admin" class="item" effect="light" content="Click to view WFM report" placement="right">
+                <el-button icon="el-icon-message" @click="dialogTableVisible = true" ></el-button>
+              </el-tooltip>
+            </el-submenu>
+          </el-menu>     
+      </el-aside>
+      <el-main>
+        <div class = "head">
+        <div class="testClass">
+            <el-button v-show="admin" @click="goPortal()">Portal</el-button>
         </div>
         </div>
       <div class="welcome">
         <p>Welcome, {{displayName}} {{displayTitle}}</p>
-      <h1 class="dateTop">
+      <h1>
         <a :href="prevMonth" class="pointer">&lt;</a>
         {{prettyDate}}
         <a :href="nextMonth" class="pointer">&gt;</a>
-        <el-tooltip v-show="admin" class="item" effect="light" content="Click to view WFM report" placement="right">
-          <el-button class="WFbutton" type="primary" icon="el-icon-message" size="mini" @click="dialogTableVisible = true" ></el-button>
-        </el-tooltip>
       </h1>
       </div>
       <el-dialog title="WFM Shift Data" width="70%" :visible.sync="dialogTableVisible" @open="openShiftTable" :before-close="beforeTableViewClose">
@@ -100,7 +88,7 @@
         </span>
       </el-dialog>
       
-      <h2 v-if="!month" v-loading="loading" class="noMonth">{{message}}</h2>
+      <h2 v-if="!month" v-loading="loading" class="noMonth welcome">{{message}}</h2>
       <!-- <button v-if="!month" class = "button"
       :class="{buttonBackground: initUndo}" v-on:click="init">
         Init Table
@@ -168,7 +156,8 @@
       <!-- <transition name="fade">
         <loading v-if="isLoading"></loading>
       </transition> -->
-  </div>
+      </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -254,6 +243,29 @@ export default {
           console.log(e);
           this.socket = null;
           this.message = 'Month not found';
+          const h = this.$createElement
+          this.$notify({
+            title: 'Click to Init Calendar',
+            message: h('p', null, [
+                [
+                  h('el-button', {
+                    style: {
+                      float: 'right',
+                      'margin-top': '15px'
+                    },
+                    attrs: {
+                    },
+                    on: {
+                      click: this.extendCalendar
+                    }
+                  }, 'Confirm')
+                ]
+            ]),
+            position: 'top-left',
+            duration: 0,
+            offset: 20,
+            dangerouslyUseHTMLString: true
+          })
           return null;
         }
       },
@@ -697,8 +709,14 @@ export default {
   min-height: 600px;
 }
 .welcome {
-  margin-top: 80px;
-  margin-left: 300px;
+  margin-top: 30px;
+  text-align: center;
+  margin-left: -120px;
+}
+.el-button{
+  background-color:#373737;
+  border-color: gray;
+  color:azure;
 }
 .tablehead {
   width: 100%;
@@ -759,7 +777,6 @@ button.customizedInitBtn:hover {
   margin-left: 30px
 }
 .button {
-  
   border: none;
   margin: 10px;
   color: rgb(255, 255, 255);
@@ -808,15 +825,15 @@ button.customizedInitBtn:hover {
     background-color: #262626;
     border: 1px solid #808080;
 }
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
-  min-height: 400px;
+.el-menu-vertical-demo {
+  margin-top: 40px;
+  background-color: #252524;
+  float: right;
 }
 .el-menu {
   background-color: #252524;
   cursor: pointer;
-  float: right;
-  border-right: solid 1px #252524 !important;
+  border: none !important;
 }
 
 .el-menu.el-menu--horizontal {
@@ -836,9 +853,6 @@ button.customizedInitBtn:hover {
 .WFbutton{
   vertical-align: middle;
   padding: 7px 15px;
-}
-.dateTop{
-  padding-left: 45px;
 }
 .item {
   margin: 4px;

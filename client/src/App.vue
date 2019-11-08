@@ -45,7 +45,6 @@ p {
 
 main {
   text-align: center;
-  margin-top: 40px;
 }
 
 header {
@@ -68,6 +67,7 @@ header span {
 }
 .footer {
   margin-top: 100px; 
+  margin-left: -50px;
   position: relative;
   bottom:0;
   font-size: 15px;
