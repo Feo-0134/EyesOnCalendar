@@ -142,7 +142,7 @@
                 </el-form-item>
                 <span>
                     <el-button @click="cleanInitForm">Cancel</el-button>
-                    <el-button type="primary" @click="initiateCalendar">Confirm</el-button>
+                    <el-button type="primary" @click="initiateCalendar()">Confirm</el-button>
                 </span>
             </el-form>
             <el-form v-if="topic === 1"   :model="teamForm" label-width="140px">
@@ -440,7 +440,7 @@ export default {
                         this.month.people[data.indexes.p].days[data.indexes.d].workType =
                         data.workType;
                     });
-                    if(res.data.people) {
+                    if(res.data) {
                         res.data.people = res.data.people.sort((x, y) => x.name.localeCompare(y.name));
                         res.data.people.forEach(person=> {
                             if(person.principle == 'TM') { globalform.TeamManager += person.name + person.alias + ';'}
@@ -465,8 +465,6 @@ export default {
                         //
                     }else if(((error.toString()).split(':')[1]).match('404') == '404') {
                         this.addFeedback('notify', 'Sorry, we didn\'t find your team data of this month. Please initiate your team & calendar first.')
-                    }else if(((error.toString()).split(':')[1]).match('undefined') == 'undefined' ) {
-                        //
                     }else if(((error.toString()).split(':')[1]).match('sort') == 'sort' ) {
                         //
                     }
@@ -481,6 +479,19 @@ export default {
         },
     },
     methods: {
+        goCalendar() {
+            let path = ''
+            if(this.topic === 0 && this.initForm.TeamName !== '') {
+                path = '/' + this.initForm.TeamName +'/' + this.globalMonth
+            } else if( this.teamForm.TeamName !== ''){
+                path = '/' + this.teamForm.TeamName +'/' + this.globalMonth
+            } else {
+                path = '/TEMPLATE/' + this.globalMonth
+            }
+            this.$router.push({ path });
+            location.reload();
+        },
+        
         topicView(type) {
             this.topic = type
         },
@@ -973,18 +984,7 @@ export default {
             }
             else {return ('/api/default/' + this.globalMonth + '/ownTeamName/'+this.alias)}
         },
-        goCalendar() {
-            let path = ''
-            if(this.topic === 0 && this.initForm.TeamName !== '') {
-                path = '/' + this.initForm.TeamName +'/' + this.globalMonth
-            } else if( this.teamForm.TeamName !== ''){
-                path = '/' + this.teamForm.TeamName +'/' + this.globalMonth
-            } else {
-                path = '/TEMPLATE/' + this.globalMonth
-            }
-            this.$router.push({ path });
-            location.reload();
-        },
+        
         initPath() {
             return (
                 "/api/" +

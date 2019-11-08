@@ -155,7 +155,7 @@ export default {
             })
             .catch(function (error) {
                 console.log(error);
-                this.addFeedback('error', 'System Error. Please turn to the developer.');
+                //this.addFeedback('error', 'System Error. Please turn to the developer.');
                 // Upon acquireTokenSilent failure (due to consent or interaction or login required ONLY)
                 // Call acquireTokenPopup(popup window)
                 if (that.requiresInteraction(error.errorCode)) {
@@ -173,7 +173,7 @@ export default {
         authRedirectCallBack(error, response) {
             if (error) {
                 console.log(error);
-                this.addFeedback('error', 'System Error. Please turn to the developer.');
+                //this.addFeedback('error', 'System Error. Please turn to the developer.');
             } else {
                 if (response.tokenType === "access_token") {
                     callMSGraph(this.graphConfig.graphMeEndpoint, response.accessToken, this.graphAPICallback);
@@ -194,9 +194,10 @@ export default {
             xmlHttp.setRequestHeader("Authorization", "Bearer " + accessToken);
             xmlHttp.send();
         },
-        
+
         // process AAD result
         graphAPICallback(data) {
+            console.log("graphAPICallback");
             let result = JSON.stringify(data, null, 4);
             let jsonresult = JSON.parse(result);
             this.title = jsonresult.jobTitle
@@ -209,24 +210,26 @@ export default {
             {
                 this.su = true
             } 
+            console.log("jsonresult.jobTitle"+ jsonresult.jobTitle);
+
             if(jsonresult.jobTitle == null) {
-                console.log("null jobTitle" + jsonresult);
-                this.title = 'Support Engineer'
-            }
-            else if( this.title.match('TECHNICAL ADVISOR') == 'TECHNICAL ADVISOR'
-                || this.title.match('TECH ADVISOR') == 'TECH ADVISOR'
-                || this.title.match('MGR') == 'MGR'
-                || this.title.match('MANAGER') == 'MANAGER'
+                // console.log("null jobTitle" + jsonresult);
+                jsonresult.jobTitle = 'SUPPORT ENG'
+                this.getTeamName();
+            } else if( jsonresult.jobTitle.includes('TECHNICAL ADVISOR')
+                || jsonresult.jobTitle.includes('TECH ADVISOR')
+                || jsonresult.jobTitle.includes('MGR')
+                || jsonresult.jobTitle.includes('MANAGER')
                 || jsonresult.userPrincipalName == 'jianalu@microsoft.com'
                 || jsonresult.userPrincipalName == 't-junzhu@microsoft.com'
                 || jsonresult.userPrincipalName == 'danzha@microsoft.com'
                 )
             {
                 this.admin = true;
-                console.log('admin')
+                console.log('admin');
+                this.getTeamName();
             }
-            
-            this.getTeamName()
+            // this.getTeamName();
         },
 
         requiresInteraction(errorCode) {

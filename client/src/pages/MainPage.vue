@@ -51,31 +51,68 @@
                 <el-button type="primary" v-show="admin" @click="goPortal()">Portal</el-button>
               </el-dropdown>
             </el-submenu>
-          </el-menu>
-      </div>
-      </div>
+          </el-menu>        
+        </div>
+        </div>
       <div class="welcome">
         <p>Welcome, {{displayName}} {{displayTitle}}</p>
-        <h1>
-          <a :href="prevMonth" class="pointer">&lt;</a>
-          {{prettyDate}}
-          <a :href="nextMonth" class="pointer">&gt;</a>
-        </h1>
+      <h1 class="dateTop">
+        <a :href="prevMonth" class="pointer">&lt;</a>
+        {{prettyDate}}
+        <a :href="nextMonth" class="pointer">&gt;</a>
+        <el-tooltip v-show="admin" class="item" effect="light" content="Click to view WFM report" placement="right">
+          <el-button class="WFbutton" type="primary" icon="el-icon-message" size="mini" @click="dialogTableVisible = true" ></el-button>
+        </el-tooltip>
+      </h1>
       </div>
-
+      <el-dialog title="WFM Shift Data" width="70%" :visible.sync="dialogTableVisible" @open="openShiftTable" :before-close="beforeTableViewClose">
+        <el-row id="copy-table" style="background-color:white; font-family: Calibri; color: #000000; font-size:15px">
+            <span >TeamShift Data</span>
+            <el-table :data=WFMData :default-sort = "{prop: 'alias', order: 'scending'}" border width="100%">
+                <el-table-column prop="alias" label="Alias" :formatter="sliceAlise" width="120"> </el-table-column>
+                <el-table-column prop="region"  label="Region" width="120"> {{copyShiftInfoData}} </el-table-column>
+                <el-table-column prop="dayofshift" label="Days of Shift" width="150"> </el-table-column>
+                <el-table-column prop="weekdayshift" label="Weekday Shift Time" > </el-table-column>
+                <el-table-column prop="weekendshift" label="Weekend Shift Time" > </el-table-column>
+                <el-table-column prop="lunchtime" label="Lunch Time" > </el-table-column>
+            </el-table>
+            <br>
+            <span>Individual Shift</span>
+            <el-table :data=WFMData border width="100%">
+                <el-table-column prop="alias" label="Engineer" width="120" :formatter="sliceAlise"> </el-table-column>
+                <el-table-column prop="status" label="Status"> </el-table-column>
+                <el-table-column prop="date" label="Date"> </el-table-column>
+            </el-table>
+        </el-row>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click=copyShiftInfo>{{ copyShiftInfoData }}</el-button>
+            <el-button type="primary" @click=openOutlook>Open Outlook</el-button>
+            <el-row :gutter="24">
+              <el-col :span="10" :offset="14">
+                <el-alert
+                  title="please click copy shift data first and then click open outlook!"
+                  type="warning" 
+                  :closable="false"
+                  center>
+                </el-alert>
+              </el-col>
+            </el-row>
+        </span>
+      </el-dialog>
+      
       <h2 v-if="!month" v-loading="loading" class="noMonth">{{message}}</h2>
       <!-- <button v-if="!month" class = "button"
-        :class="{buttonBackground: initUndo}" v-on:click="init">
+      :class="{buttonBackground: initUndo}" v-on:click="init">
         Init Table
       </button>
       <button v-if="!month" class = "button"
-        :class="{buttonBackground: !initUndo}" v-on:click="reload">
+      :class="{buttonBackground: !initUndo}" v-on:click="reload">
         Reload Table
       </button> -->
       <div  v-if="month" >
           <!-- <el-tabs id="rolesTabview" v-model="activeName" @tab-click="handleClick">
             <el-tab-pane class="mainPanel" label="All Members" name="first"> -->
-              <div id="All_Members" v-show="allMember" class="mainPanel" >
+               <div id="All_Members" v-show="allMember" class="mainPanel" >
                <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
                <div class="name"></div>
                <div v-for="(p,index) in month.people[0].days"
@@ -90,8 +127,8 @@
               :pindex="index" :person="p"  v-show="p.principle != 'TM' " :userName="displayName"
               :openflag = "openflag" @opensync = "handleOpenPanel"/>
               </div>
-            <!-- </el-tab-pane> -->
-            <!-- <el-tab-pane class="mainPanel" label="FTE Members" name="second"> -->
+            <!-- </el-tab-pane>
+            <el-tab-pane class="mainPanel" label="FTE Members" name="second"> -->
               <div id="FTE_Members" v-show="fteMember" class="mainPanel">
               <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
                 <div class="name"></div>
@@ -106,10 +143,10 @@
               <person  v-for="(p,index) in month.people" v-show="p.role == 'FTE' && p.principle != 'TM' "
               :key="p._id" :pindex="index" :person="p" :userName="displayName"
               :openflag = "openflag" @opensync = "handleOpenPanel"/>
-              </div>
-            <!-- </el-tab-pane> -->
-            <!-- <el-tab-pane class="mainPanel" label="Vendor Members" name="third"> -->
-              <div id="Vendor_Members" v-show="vendorMember" class="mainPanel">
+            </div>
+            <!-- </el-tab-pane>
+            <el-tab-pane class="mainPanel" label="Vendor Members" name="third"> -->
+               <div id="Vendor_Members" v-show="vendorMember" class="mainPanel">
                <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
                 <div class="name"></div>
                 <div v-for="(p,index) in month.people[0].days"
@@ -124,13 +161,13 @@
               :key="p._id" :pindex="index" :person="p" :userName="displayName"
               :openflag = "openflag" @opensync = "handleOpenPanel"/>
               </div>
-            <!-- </el-tab-pane> -->
-          <!-- </el-tabs> -->
+            <!-- </el-tab-pane>
+          </el-tabs> -->
       </div>
+      <help-screen />
       <!-- <transition name="fade">
         <loading v-if="isLoading"></loading>
       </transition> -->
-      <!-- <HelpScreen /> -->
   </div>
 </template>
 
@@ -161,6 +198,39 @@ export default {
       fteMember: false,
       vendorMember: false,
       loading:false,
+      teamForm: {
+        MorningShift: '',
+        NightShift: '',
+      },
+
+      dialogTableVisible: false,
+      copyShiftInfoData: 'Copy Shift Data',
+      TeamShiftText: "Team Shift",
+      WFMData: [],
+      shiftData: [],
+      Region:{
+          gcr: "GCR",
+          eu: "EMEA",
+          us: "US"
+      },
+      DayOfShift:{
+          normal: "Mon-Fri",
+          weekendshift: "Sun-Thu"
+      },
+      WeekdayShiftType:{
+          normal: "9:00am~18:00pm",
+          morningshift: "7:00am~16:00pm",
+          nightshift: "2:00pm~23:00pm"
+      },
+      WeekendShiftType:{
+          saturday: "Sat: 7:00am~16:00pm",
+          sunday: "Sun: 7:00am~16:00pm",
+      },
+      LunchTime:{
+          normal: "12:30~13:30pm",
+          morningshift: "11:30~12:30pm",
+      },
+
     };
   },
   asyncComputed: {
@@ -257,11 +327,7 @@ export default {
           .subtract(1, 'M')
           .format('/YYYY/M')}`);
     },
-    goPortal() {
-        const path = '/portal'
-        this.$router.push({ path });
-        // location.reload();
-    },
+    
     goReport() {
       return (`/${this.date.split('/')[1].toString()}${moment(this.date, '/YYYY/M').format('/YYYY/M')}/report`);
     },
@@ -361,10 +427,16 @@ export default {
     this.loadTeamName()
     this.state = this.$store.state
     window.addEventListener('keyup', (ev) => {
-      this.callUndo(ev);
+      //this.callUndo(ev);
     });
   },
+
   methods: {
+    goPortal() {
+        const path = '/portal'
+        this.$router.push({ path });
+        // location.reload();
+    },
     loadTeamName () {
       new Promise((resolve, reject) => {
         this.$http.get(this.getTeamApiPath)
@@ -478,7 +550,7 @@ export default {
     handleClick(tab, event) {
       // console.log(tab, event);
     },
-    handleOpen(key, keyPath) {
+        handleOpen(key, keyPath) {
         console.log(key, keyPath);
     },
     handleClose(key, keyPath) {
@@ -496,7 +568,7 @@ export default {
       }catch(e){
 
       }
-    }
+    },
     // callUndo(ev) {
     //   if (ev.code !== "KeyZ" || ev.ctrlKey !== true) return;
     //   else if (this.$history.length == 0) return;
@@ -510,6 +582,112 @@ export default {
     //     this.$http.post(x.path, x.payload);
     //   }
     // },
+    
+    openShiftTable(){
+      console.log('opening shift data');
+      this.WFMData = this.month.people;
+      // console.log(this.WFMData);
+
+      // get all weekends in this month
+      let year = this.month.year;
+      let month = this.month.month;
+
+      for(let key of this.WFMData) {
+        // get client region
+        let newdate = new Date();
+        let timezone = newdate.getTimezoneOffset() / 60;
+        // console.log(timezone);
+        if(timezone == '-8'){
+            key.region = this.Region.gcr;
+        } else if (timezone == '5') {
+            key.region = this.Region.eu;
+        } else if (timezone == '1') {
+            key.region = this.Region.us;
+        }
+        // get day of shift
+        // console.log(key.days);
+        let weekendcount = 0;
+        for(let days of key.days){
+            // console.log(days.day + days.workType);
+            let d = new Date(year + "-" + month + "-" + days.day);
+            // console.log(d.getDay() + days.workType);
+            if((d.getDay() == 6 && days.workType == "MS") || (d.getDay() == 0 && days.workType == "MS")) {
+                weekendcount ++;
+                // console.log(weekendcount);
+                // console.log(d.getDay() + days.workType);
+            };
+        }
+        if(weekendcount > 2){
+            // engineer is on weekend shift
+            key.dayofshift = this.DayOfShift.weekendshift;
+            key.weekendshift = this.WeekendShiftType.sunday;
+        } else {
+            key.dayofshift = this.DayOfShift.normal;
+        }
+        
+        // get weekdayshift
+        let morningsft = this.teamForm.MorningShift;
+        let nightsft = this.teamForm.NightShift;
+
+        let utctime = 0 - timezone;
+        let timezonesign = (utctime >= 0)? "+" : "";
+        if(morningsft.includes(key.name)) {
+            // console.log(utctime);
+            // console.log(timezonesign);
+            // console.log(timezone);
+            key.weekdayshift = this.WeekdayShiftType.morningshift + " UTC" + timezonesign + utctime;
+            key.lunchtime = this.LunchTime.morningshift + " UTC" + timezonesign + utctime;
+        } else if(nightsft.includes(key.name)){
+            key.weekdayshift = this.WeekdayShiftType.nightshift + " UTC" + timezonesign + utctime;
+        } else {
+            key.weekdayshift = this.WeekdayShiftType.normal + " UTC" + timezonesign + utctime;
+            key.lunchtime = this.LunchTime.normal + " UTC" + timezonesign + utctime;
+        }
+        key.status = "-";
+        key.date = "2019-10-01";
+      }
+
+      // let shiftData = this.teamForm;
+      // console.log(shiftData);
+  },
+
+  copyShiftInfo() {
+    console.log("copying shift data");
+
+    const table = document.getElementById('copy-table');
+    const range = document.createRange();
+
+    range.selectNode(table);  // define copy data is table
+
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) selection.removeAllRanges();
+    selection.addRange(range);
+
+    var successful = document.execCommand('copy');  // execute copy
+    var msg = successful ? 'successful' : 'unsuccessful';
+
+    if(msg === 'successful'){
+        this.copyShiftInfoData = 'Copied!!'
+    }else {
+        this.addFeedback('notify', 'Sorry, failed to copy, please try manually');
+    }
+
+    selection.removeAllRanges();  // remove selection
+  },
+  beforeTableViewClose() {
+      this.dialogTableVisible = false;
+      this.copyShiftInfoData = 'Copy Shift Data'
+  },
+  openOutlook() {
+      console.log("opening outlook");
+      window.location.href = "mailto:wfms@microsoft.com?subject=[REVIEW REQUIRED] WFM Update List";
+      this.dialogTableVisible = false;
+      this.copyShiftInfoData = 'Copy Shift Data'
+  },
+  sliceAlise(row, column) {
+    // console.log('slice alice');
+    return row.alias.slice(1, -1);
+  },
   },
 };
 </script>
@@ -525,7 +703,6 @@ export default {
 .tablehead {
   width: 100%;
 }
-
 .customizedInitBtn {
   margin: auto;
   height: 35px;
@@ -542,7 +719,6 @@ button.customizedInitBtn:hover {
   border: 1px solid rgba(64, 158, 255, 20);
   outline: none;
 }
-
 .sticky {
   position: fixed;
   top: 0;
@@ -572,8 +748,8 @@ button.customizedInitBtn:hover {
 
 .testClass {
   margin-right: 40px;
-  margin-bottom: 55px;
-  text-align:right;
+    margin-bottom: 55px;
+    text-align:right;
 
 }
 .testClassII {
@@ -583,7 +759,7 @@ button.customizedInitBtn:hover {
   margin-left: 30px
 }
 .button {
-
+  
   border: none;
   margin: 10px;
   color: rgb(255, 255, 255);
@@ -656,5 +832,25 @@ button.customizedInitBtn:hover {
 }
 .el-loading-mask {
     background-color:#262626
+}
+.WFbutton{
+  vertical-align: middle;
+  padding: 7px 15px;
+}
+.dateTop{
+  padding-left: 45px;
+}
+.item {
+  margin: 4px;
+}
+.el-tooltip__popper {
+  position: absolute;
+  border-radius: 4px;
+  padding: 10px;
+  z-index: 2000;
+  font-size: 15px;
+  line-height: 1.2;
+  min-width: 10px;
+  word-wrap: break-word;
 }
 </style>
