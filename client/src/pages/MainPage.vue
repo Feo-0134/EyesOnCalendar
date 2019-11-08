@@ -29,13 +29,26 @@
               <template slot="title">
               <i class="el-icon-more"></i>
               </template>
-                <h4 style="margin-left:10px; color: azure;font-family: sans-serif;" >More Tools</h4>
+                <h4 style="margin-left:10px; color: azure;" >More Tools</h4>
               <!-- <el-tooltip v-show="admin" class="item" effect="light" content="Click to Init Calendar" placement="right">
               <el-button  icon="el-icon-plus" @click="extendCalendar()"></el-button>
               </el-tooltip> -->
+              <div>
               <el-tooltip v-show="admin" class="item" effect="light" content="Click to view WFM report" placement="right">
                 <el-button icon="el-icon-message" @click="dialogTableVisible = true" ></el-button>
               </el-tooltip>
+              <el-tooltip v-show="admin" class="item" effect="light" content="Contact" placement="right">
+                <el-button icon="el-icon-question" @click=";" ></el-button>
+              </el-tooltip>
+              </div>
+              <div>
+              <el-tooltip v-show="admin" class="item" effect="light" content="Contact" placement="right">
+                <el-button icon="el-icon-question" @click=";" ></el-button>
+              </el-tooltip>
+              <el-tooltip v-show="admin" class="item" effect="light" content="Contact" placement="right">
+                <el-button icon="el-icon-question" @click=";" ></el-button>
+              </el-tooltip>
+              </div>
             </el-submenu>
           </el-menu>     
       </el-aside>
@@ -47,11 +60,11 @@
         </div>
       <div class="welcome">
         <p>Welcome, {{displayName}} {{displayTitle}}</p>
-      <h1>
-        <a :href="prevMonth" class="pointer">&lt;</a>
-        {{prettyDate}}
-        <a :href="nextMonth" class="pointer">&gt;</a>
-      </h1>
+        <h1>
+          <a :href="prevMonth" class="pointer">&lt;</a>
+          {{prettyDate}}
+          <a :href="nextMonth" class="pointer">&gt;</a>
+        </h1>
       </div>
       <el-dialog title="WFM Shift Data" width="70%" :visible.sync="dialogTableVisible" @open="openShiftTable" :before-close="beforeTableViewClose">
         <el-row id="copy-table" style="background-color:white; font-family: Calibri; color: #000000; font-size:15px">
@@ -87,7 +100,6 @@
             </el-row>
         </span>
       </el-dialog>
-      
       <h2 v-if="!month" v-loading="loading" class="noMonth welcome">{{message}}</h2>
       <!-- <button v-if="!month" class = "button"
       :class="{buttonBackground: initUndo}" v-on:click="init">
@@ -765,9 +777,8 @@ button.customizedInitBtn:hover {
 }
 
 .testClass {
-  margin-right: 40px;
-    margin-bottom: 55px;
-    text-align:right;
+  margin-bottom: 55px;
+  text-align:right;
 
 }
 .testClassII {
