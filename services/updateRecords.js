@@ -126,6 +126,7 @@ async function modifyTemplate (year, month, peopleSrc) {
 
   var src = await fs.createReadStream(filepath)
   var people = await json(src)
+  console.log(peopleSrc[0].alias)
   people[0].alias = peopleSrc[0].alias
   people[0].name = peopleSrc[0].name
   people[0].role = peopleSrc[0].role

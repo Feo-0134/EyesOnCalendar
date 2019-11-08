@@ -3,8 +3,12 @@ mongoose.set('useCreateIndex', true)
 
 var connString = ''
 
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === undefined) {
+if (process.env.NODE_ENV === 'production') {
   connString = process.env.DB_CONNECTSTRING_PRODUCTION
+} else if (process.env.NODE_ENV === 'dev') {
+  connString = process.env.DB_CONNECTSTRING_DEV
+} else if (process.env.NODE_ENV === 'local') {
+  connString = process.env.DB_CONNECTSTRING_LOCAL
 } else {
   connString = process.env.DB_CONNECTSTRING_DEV
 }

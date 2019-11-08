@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev:client": "cd client && node build/dev-server.js",
+    "dev:server": "nodemon index.js",
+    "build": "cd client && node build/build.js"
   },
   "author": "Petre",
   "license": "ISC",

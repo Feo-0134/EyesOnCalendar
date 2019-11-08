@@ -17,19 +17,19 @@ const getTeamName = require('./services/getTeamName.js')
 const updateRecords = require('./services/updateRecords.js')
 
 // env params
-var staticPath = ''
-if (process.env.NODE_ENV === 'production' ||
- process.env.NODE_ENV === undefined) {
-  staticPath = '/dist/'
-} else {
-  staticPath = './client/dist/'
-}
+var staticPath = './client/dist/'
+// if (process.env.NODE_ENV === 'production' ||
+//  process.env.NODE_ENV === undefined) {
+//   staticPath = './client/dist/'
+// } else {
+//   staticPath = './client/dist/'
+// }
 
 // db connection
 const db = require('./mongodb')
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {
-  console.log('Connected to DB')
+  console.log('Connected to DB ' + process.env.NODE_ENV)
 })
 
 // koa router
