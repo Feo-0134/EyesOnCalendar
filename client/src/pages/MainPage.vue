@@ -34,23 +34,32 @@
               <el-button  icon="el-icon-plus" @click="extendCalendar()"></el-button>
               </el-tooltip> -->
               <div>
-              <el-tooltip v-show="admin" class="item" effect="light" content="Click to view WFM report" placement="right">
+              <el-tooltip v-show="admin" class="item" effect="light" content="WFM report" placement="right">
                 <el-button icon="el-icon-message" @click="dialogTableVisible = true" ></el-button>
               </el-tooltip>
-              <el-tooltip v-show="admin" class="item" effect="light" content="Contact" placement="right">
-                <el-button icon="el-icon-question" @click=";" ></el-button>
+              <el-tooltip v-show="admin" class="item" effect="light" content="Admin Portal" placement="right">
+                <el-button icon="el-icon-edit" @click="goPortal()" ></el-button>
               </el-tooltip>
               </div>
               <div>
-              <el-tooltip v-show="admin" class="item" effect="light" content="Contact" placement="right">
-                <el-button icon="el-icon-question" @click=";" ></el-button>
+              <el-tooltip v-show="admin" class="item" effect="light" content="Personal Setting" placement="right">
+                <el-button icon="el-icon-setting" @click=";" ></el-button>
               </el-tooltip>
               <el-tooltip v-show="admin" class="item" effect="light" content="Contact" placement="right">
-                <el-button icon="el-icon-question" @click=";" ></el-button>
+                <el-button icon="el-icon-question" @click="open=!open" ></el-button>
+              </el-tooltip>
+              </div>
+              <div>
+              <el-tooltip v-show="admin" class="item" effect="light" content="Show Badge" placement="right">
+                <el-button icon="el-icon-news" @click=";" ></el-button>
+              </el-tooltip>
+              <el-tooltip v-show="admin" class="item" effect="light" content="More Information" placement="right">
+                <el-button icon="el-icon-info" @click=";" ></el-button>
               </el-tooltip>
               </div>
             </el-submenu>
-          </el-menu>     
+          </el-menu>
+          <el-button class="fab2" @click="open=!open">?</el-button>
       </el-aside>
       <el-main>
         <div class = "head">
@@ -164,11 +173,19 @@
             <!-- </el-tab-pane>
           </el-tabs> -->
       </div>
+      
       <help-screen />
       <!-- <transition name="fade">
         <loading v-if="isLoading"></loading>
       </transition> -->
       </el-main>
+      <div class="overlay" v-if="open" @click="open=false">
+        <div class="help-dialog">
+          <h1>Contact</h1>
+          <p>Please email to eyesoncalendar2@microsoft.com for any question or further support.</p>
+          <a href="mailto:eyesoncalendar2@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+        </div>
+      </div>
   </el-container>
 </template>
 
@@ -199,6 +216,7 @@ export default {
       fteMember: false,
       vendorMember: false,
       loading:false,
+      open:false,
       teamForm: {
         MorningShift: '',
         NightShift: '',
@@ -723,7 +741,7 @@ export default {
 .welcome {
   margin-top: 30px;
   text-align: center;
-  margin-left: -120px;
+  margin-left: -80px;
 }
 .el-button{
   background-color:#373737;
@@ -819,8 +837,8 @@ button.customizedInitBtn:hover {
   visibility: hidden;
 }
 .mainPanel {
-  margin-top: 100px;
-  min-height: 800px;
+  margin-top: 50px;
+  min-height: 700px;
   min-width: fit-content;
 }
 .el-input-group--append .el-input__inner, .el-input-group__prepend {
@@ -877,5 +895,21 @@ button.customizedInitBtn:hover {
   line-height: 1.2;
   min-width: 10px;
   word-wrap: break-word;
+}
+.fab2 {
+  position: fixed;
+  bottom: 20px;
+  border: none;
+  color: #8f9299;
+  font-weight: 700;
+  font-size: 30px;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  background-color: inherit !important; 
+}
+
+.fab2:hover {
+  box-shadow: 0 6px 14px 0 #000;
+  transform: scale(1.05);
 }
 </style>

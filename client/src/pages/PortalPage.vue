@@ -1,10 +1,5 @@
 <template> 
     <el-container v-show="admin">
-        <div class="navigationBar">
-            <el-button type="primary" v-show="true" @click="goCalendar()">Calendar</el-button>
-        </div>
-    <el-header class="navigationBar">EyesonCalendar Administration</el-header>
-    <el-container>
         <el-aside width="300px">
             <el-menu :default-openeds="['1']">
                 <el-submenu index="1">
@@ -20,7 +15,10 @@
                 </el-submenu>
             </el-menu>
         </el-aside>
-        <el-main>
+        <el-main>        
+            <div class="navigationBarII">
+                <el-button  v-show="true" @click="goCalendar()">Calendar</el-button>
+            </div>
             <el-dialog title="Shift Arrangement" :visible.sync="sftFormVisible">
                 <el-form :model="sftForm">
                     <el-form-item label="Alias" :label-width="formLabelWidth">
@@ -305,7 +303,6 @@
         </el-main>
     </el-container>
           <!-- <help-screen /> -->
-    </el-container>
 </template>
 
 <script>
@@ -1166,6 +1163,9 @@ export default {
     }
     .el-form-item__content {
         display:flex;
+    }
+    .navigationBarII {
+        text-align: right;
     }
     .navigationBar {
         display: inline-flexbox;
