@@ -1,6 +1,9 @@
 <template>
   <div unselectable="on" v-bind:style="{'background-color': getColor(), 'border-color': getBorderColor()}" :class="{'special':today ,'cellx': true, 'workday': true}"  v-on:click="toggle" >
-    {{displayValue}}
+    <p v-if="!today" v-bind:style="{'color':getFontColor()}" >{{displayValue}}</p>
+    <el-badge :value="2" v-if="today">
+    <p v-bind:style="{'color':getFontColor()}" >{{displayValue}}</p>
+    </el-badge>
   </div>
 </template>
 
@@ -27,6 +30,10 @@ export default {
   },
   methods: {
     /* get color */
+    getFontColor() {
+      if(this.day.workType == 'W') return this.getColor();
+      else return '#C2C4CE'
+    },
     getBorderColor() {
       switch (this.day.workDay) {
         case 0:
@@ -110,7 +117,7 @@ export default {
         if (this.day.workType == "HMSL") this.day.workDay = 7;
         this.dbFunc()
       }
-      if (this.day.workType == "W") return " "; // not display "W" in the calendar for there are TOO MANY WORKING DAYS
+      if (this.day.workType == "W") {return "W"}; // not display "W" in the calendar for there are TOO MANY WORKING DAYS
       if (this.day.workType == "HMSL" || this.day.workType == "HMAL") return " H(M)"; // not display "W" in the calendar for there are TOO MANY WORKING DAYS
       if (this.day.workType == "HASL" || this.day.workType == "HAAL") return " H(A)"; // not display "W" in the calendar for there are TOO MANY WORKING DAYS
       

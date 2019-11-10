@@ -260,7 +260,7 @@ day {
   font-family: "Roboto", Corbel, Avenir, "Lucida Grande", "Lucida Sans", sans-serif;
 }
 .workday {
-  color: #C2C4CE;
+  /* color: #C2C4CE; */
   /* cursor: pointer; */
 }
 .cellxII {
