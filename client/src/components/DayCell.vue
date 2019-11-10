@@ -154,6 +154,13 @@ export default {
 </script>
 
 <style>
+.el-badge__content {
+  border: none !important;
+  background-color: #be5252 !important;
+}
+.el-badge__content.is-fixed {
+  top: 7px !important;
+}
 .cellx {
   border-radius: 2px;
   /* text-transform: uppercase; */
