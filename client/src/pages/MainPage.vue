@@ -43,7 +43,7 @@
               </div>
               <div>
               <el-tooltip v-show="admin" class="item" effect="light" content="Personal Setting" placement="right">
-                <el-button icon="el-icon-setting" @click=";" ></el-button>
+                <el-button icon="el-icon-setting" @click="showTool = false" ></el-button>
               </el-tooltip>
               <el-tooltip v-show="admin" class="item" effect="light" content="Contact" placement="right">
                 <el-button icon="el-icon-question" @click="open=!open" ></el-button>
@@ -64,7 +64,7 @@
       <el-main>
         <div class = "head">
         <div class="testClass">
-            <el-button v-show="admin" @click="goPortal()">Portal</el-button>
+            <el-button v-show="admin & showTool" @click="goPortal()">Portal</el-button>
         </div>
         </div>
       <div class="welcome">
@@ -174,7 +174,7 @@
           </el-tabs> -->
       </div>
       
-      <help-screen />
+      <help-screen v-show="showTool" />
       <!-- <transition name="fade">
         <loading v-if="isLoading"></loading>
       </transition> -->
@@ -217,6 +217,7 @@ export default {
       vendorMember: false,
       loading:false,
       open:false,
+      showTool: true,
       teamForm: {
         MorningShift: '',
         NightShift: '',
