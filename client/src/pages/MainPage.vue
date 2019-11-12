@@ -27,37 +27,26 @@
                 <el-button @click="allMember = false;fteMember = true;vendorMember = false;">FTE Members</el-button>
                 <el-button @click="allMember = false;fteMember = false;vendorMember = true;">Vendor Members</el-button>
             </el-submenu>
+            <el-submenu index="4">
+              <template slot="title">
+                <i @click="goPortal()" >A</i>
+              </template>
+                <el-button style="margin-left:10px; color: azure;" @click="goPortal()">Go to Portal</el-button>
+            </el-submenu>
             <el-submenu index="3">
               <template slot="title">
               <i class="el-icon-more"></i>
               </template>
-                <h4 style="margin-left:10px; color: azure;" >More Tools</h4>
-              <!-- <el-tooltip v-show="admin" class="item" effect="light" content="Click to Init Calendar" placement="right">
-              <el-button  icon="el-icon-plus" @click="extendCalendar()"></el-button>
-              </el-tooltip> -->
+              <h4 style="margin-left:10px; color: azure;" >More Tools</h4>
               <div>
-              <el-tooltip v-show="admin" class="item" effect="light" content="WFM report" placement="right">
-                <el-button icon="el-icon-message" @click="dialogTableVisible = true" ></el-button>
-              </el-tooltip>
-              <el-tooltip v-show="admin" class="item" effect="light" content="Admin Portal" placement="right">
-                <el-button icon="el-icon-edit" @click="goPortal()" ></el-button>
-              </el-tooltip>
+                <el-tooltip v-show="admin" class="item" effect="light" content="WFM report" placement="right">
+                  <el-button icon="el-icon-message" @click="dialogTableVisible = true" ></el-button>
+                </el-tooltip>
               </div>
               <div>
-              <el-tooltip v-show="admin" class="item" effect="light" content="Personal Setting" placement="right">
-                <el-button icon="el-icon-setting" @click="showTool = false" ></el-button>
-              </el-tooltip>
-              <el-tooltip v-show="admin" class="item" effect="light" content="Contact" placement="right">
-                <el-button icon="el-icon-question" @click="open=!open" ></el-button>
-              </el-tooltip>
-              </div>
-              <div>
-              <el-tooltip v-show="admin" class="item" effect="light" content="Show Badge" placement="right">
-                <el-button icon="el-icon-news" @click=";" ></el-button>
-              </el-tooltip>
-              <el-tooltip v-show="admin" class="item" effect="light" content="More Information" placement="right">
-                <el-button icon="el-icon-info" @click=";" ></el-button>
-              </el-tooltip>
+                <el-tooltip v-show="admin" class="item" effect="light" content="Personal Setting" placement="right">
+                  <el-button icon="el-icon-setting" @click="showTool = false" ></el-button>
+                </el-tooltip>
               </div>
             </el-submenu>
           </el-menu>
@@ -66,51 +55,51 @@
       <el-main>
         <div class = "head">
         <div class="testClass">
-            <el-button v-show="admin & showTool" @click="goPortal()">Portal</el-button>
+            <!-- <el-button v-show="admin & showTool" @click="goPortal()">Portal</el-button> -->
         </div>
         </div>
-      <div class="welcome">
-        <p>Welcome, {{displayName}} {{displayTitle}}</p>
-        <h1>
-          <a :href="prevMonth" class="pointer">&lt;</a>
-          {{prettyDate}}
-          <a :href="nextMonth" class="pointer">&gt;</a>
-        </h1>
-      </div>
-      <el-dialog title="WFM Shift Data" width="70%" :visible.sync="dialogTableVisible" @open="openShiftTable" :before-close="beforeTableViewClose">
-        <el-row id="copy-table" style="background-color:white; font-family: Calibri; color: #000000; font-size:15px">
-            <span >TeamShift Data</span>
-            <el-table :data=WFMData :default-sort = "{prop: 'alias', order: 'scending'}" border width="100%">
-                <el-table-column prop="alias" label="Alias" :formatter="sliceAlise" width="120"> </el-table-column>
-                <el-table-column prop="region"  label="Region" width="120"> {{copyShiftInfoData}} </el-table-column>
-                <el-table-column prop="dayofshift" label="Days of Shift" width="150"> </el-table-column>
-                <el-table-column prop="weekdayshift" label="Weekday Shift Time" > </el-table-column>
-                <el-table-column prop="weekendshift" label="Weekend Shift Time" > </el-table-column>
-                <el-table-column prop="lunchtime" label="Lunch Time" > </el-table-column>
-            </el-table>
-            <br>
-            <span>Individual Shift</span>
-            <el-table :data=WFMData border width="100%">
-                <el-table-column prop="alias" label="Engineer" width="120" :formatter="sliceAlise"> </el-table-column>
-                <el-table-column prop="status" label="Status"> </el-table-column>
-                <el-table-column prop="date" label="Date"> </el-table-column>
-            </el-table>
-        </el-row>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click=copyShiftInfo>{{ copyShiftInfoData }}</el-button>
-            <el-button type="primary" @click=openOutlook>Open Outlook</el-button>
-            <el-row :gutter="24">
-              <el-col :span="10" :offset="14">
-                <el-alert
-                  title="please click copy shift data first and then click open outlook!"
-                  type="warning" 
-                  :closable="false"
-                  center>
-                </el-alert>
-              </el-col>
-            </el-row>
-        </span>
-      </el-dialog>
+        <div class="welcome">
+          <p>Welcome, {{displayName}} {{displayTitle}}</p>
+          <h1>
+            <a :href="prevMonth" class="pointer">&lt;</a>
+            {{prettyDate}}
+            <a :href="nextMonth" class="pointer">&gt;</a>
+          </h1>
+        </div>
+        <el-dialog title="WFM Shift Data" width="70%" :visible.sync="dialogTableVisible" @open="openShiftTable" :before-close="beforeTableViewClose">
+          <el-row id="copy-table" style="background-color:white; font-family: Calibri; color: #000000; font-size:15px">
+              <span >TeamShift Data</span>
+              <el-table :data=WFMData :default-sort = "{prop: 'alias', order: 'scending'}" border width="100%">
+                  <el-table-column prop="alias" label="Alias" :formatter="sliceAlise" width="120"> </el-table-column>
+                  <el-table-column prop="region"  label="Region" width="120"> {{copyShiftInfoData}} </el-table-column>
+                  <el-table-column prop="dayofshift" label="Days of Shift" width="150"> </el-table-column>
+                  <el-table-column prop="weekdayshift" label="Weekday Shift Time" > </el-table-column>
+                  <el-table-column prop="weekendshift" label="Weekend Shift Time" > </el-table-column>
+                  <el-table-column prop="lunchtime" label="Lunch Time" > </el-table-column>
+              </el-table>
+              <br>
+              <span>Individual Shift</span>
+              <el-table :data=WFMData border width="100%">
+                  <el-table-column prop="alias" label="Engineer" width="120" :formatter="sliceAlise"> </el-table-column>
+                  <el-table-column prop="status" label="Status"> </el-table-column>
+                  <el-table-column prop="date" label="Date"> </el-table-column>
+              </el-table>
+          </el-row>
+          <span slot="footer" class="dialog-footer">
+              <el-button @click=copyShiftInfo>{{ copyShiftInfoData }}</el-button>
+              <el-button type="primary" @click=openOutlook>Open Outlook</el-button>
+              <el-row :gutter="24">
+                <el-col :span="10" :offset="14">
+                  <el-alert
+                    title="please click copy shift data first and then click open outlook!"
+                    type="warning" 
+                    :closable="false"
+                    center>
+                  </el-alert>
+                </el-col>
+              </el-row>
+          </span>
+        </el-dialog>
       <h2 v-if="!month" v-loading="loading" class="noMonth welcome">{{message}}</h2>
       <div  v-if="month" >
           <!-- <el-tabs id="rolesTabview" v-model="activeName" @tab-click="handleClick">
@@ -738,7 +727,7 @@ export default {
 }
 .helpBtn.el-button {
   position: fixed;
-  left:0px;
+  left:10px;
   bottom:20px;
   border: none;
   font-size: larger; 

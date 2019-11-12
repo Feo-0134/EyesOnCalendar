@@ -352,7 +352,7 @@ day {
 }
 .help-dialogII {
   border: 5px solid #404040;
-  background-color: #3D5B5E;
+  background-color: #616a6d;
   position: absolute;
   border-radius: 20px;
   top: 25%;
