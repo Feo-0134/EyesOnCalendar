@@ -6,7 +6,8 @@
               <template slot="title">
                 <i class="el-icon-search"></i>
               </template>
-                <span>
+                <span style="color: azure;">
+                    Search Pod
                     <el-autocomplete
                       v-model="teamName"
                       :fetch-suggestions="querySearchAsync"
@@ -21,9 +22,10 @@
               <template slot="title">
                 <i class="el-icon-view"></i>
               </template>
-                <el-button @click="allMember = true;fteMember = false;vendorMember = false;">All Member</el-button>
-                <el-button @click="allMember = false;fteMember = true;vendorMember = false;">FTE Member</el-button>
-                <el-button @click="allMember = false;fteMember = false;vendorMember = true;">Vendor Member</el-button>
+                <h4 style="margin-left:10px; color: azure;" >View Filter</h4>
+                <el-button @click="allMember = true;fteMember = false;vendorMember = false;">All Members</el-button>
+                <el-button @click="allMember = false;fteMember = true;vendorMember = false;">FTE Members</el-button>
+                <el-button @click="allMember = false;fteMember = false;vendorMember = true;">Vendor Members</el-button>
             </el-submenu>
             <el-submenu index="3">
               <template slot="title">
@@ -741,7 +743,7 @@ export default {
   border: none;
   font-size: larger; 
   background-color: #252525;
-  color:rgb(255, 255, 255);
+  color:rgb(144, 147, 153);
 }
 .noMonth {
   min-height: 600px;
