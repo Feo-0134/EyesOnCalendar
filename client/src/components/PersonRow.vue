@@ -31,7 +31,7 @@
                       width="200"
                       trigger="click">
                       <p>Please inform the team about your absence.</p>
-                      <a href="mailto:YOUR_TEAMNAME_HERE@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+                      <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
                       <div slot="reference" v-on:click="cycle($event,2)" class="box0 purple">SL</div>
                     </el-popover>
                     <el-popover
@@ -39,7 +39,7 @@
                       width="200"
                       trigger="click">
                       <p>Please inform the team about your absence.</p>
-                      <a href="mailto:YOUR_TEAMNAME_HERE@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+                      <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
                       <div slot="reference" v-on:click="cycle($event,3)" class="box0 purple">AL</div>
                     </el-popover>
                     </div>
@@ -54,7 +54,7 @@
                       width="200"
                       trigger="click">
                       <p>Please inform the team about your absence.</p>
-                      <a href="mailto:YOUR_TEAMNAME_HERE@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+                      <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
                       <div slot="reference" v-on:click="cycle($event,12)" class="box1" :class="alORsl?'purple2':'purple1'">H(M)</div>
                     </el-popover>
                     <el-popover
@@ -62,7 +62,7 @@
                       width="200"
                       trigger="click">
                       <p>Please inform the team about your absence.</p>
-                      <a href="mailto:YOUR_TEAMNAME_HERE@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+                      <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
                       <div slot="reference" v-on:click="cycle($event,14)" class="box1" :class="alORsl?'purple2':'purple1'">H(A)</div>
                     </el-popover>
                     </div>
@@ -84,7 +84,7 @@
                       width="200"
                       trigger="click">
                       <p>Please inform the team about your absence.</p>
-                      <a href="mailto:YOUR_TEAMNAME_HERE@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+                      <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
                       <div slot="reference" v-on:click="cycle($event,7)" class="box2 blue">T</div>
                     </el-popover>
                     <h5 class = "blackFont">Training</h5>

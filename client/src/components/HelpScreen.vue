@@ -124,15 +124,14 @@ export default {
 .fab {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  left: 20px;
   width: 40px;
   height: 40px;
   border-radius: 30px;
   border: none;
-  background-color: #600;
   color: white;
   font-weight: 700;
-  font-size: 30px;
+  font-size: 20px;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
 }

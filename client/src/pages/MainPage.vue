@@ -59,7 +59,7 @@
               </div>
             </el-submenu>
           </el-menu>
-          <el-button class="fab2" @click="open=!open">?</el-button>
+          <el-button class="helpBtn" @click="openHelp">?</el-button>
       </el-aside>
       <el-main>
         <div class = "head">
@@ -110,14 +110,6 @@
         </span>
       </el-dialog>
       <h2 v-if="!month" v-loading="loading" class="noMonth welcome">{{message}}</h2>
-      <!-- <button v-if="!month" class = "button"
-      :class="{buttonBackground: initUndo}" v-on:click="init">
-        Init Table
-      </button>
-      <button v-if="!month" class = "button"
-      :class="{buttonBackground: !initUndo}" v-on:click="reload">
-        Reload Table
-      </button> -->
       <div  v-if="month" >
           <!-- <el-tabs id="rolesTabview" v-model="activeName" @tab-click="handleClick">
             <el-tab-pane class="mainPanel" label="All Members" name="first"> -->
@@ -173,20 +165,10 @@
             <!-- </el-tab-pane>
           </el-tabs> -->
       </div>
-      
-      <help-screen v-show="showTool" />
-      <!-- <transition name="fade">
-        <loading v-if="isLoading"></loading>
-      </transition> -->
       </el-main>
-      <div class="overlay" v-if="open" @click="open=false">
-        <div class="help-dialog">
-          <h1>Contact</h1>
-          <p>Please email to eyesoncalendar2@microsoft.com for any question or further support.</p>
-          <a href="mailto:eyesoncalendar2@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
-        </div>
-      </div>
+
   </el-container>
+  
 </template>
 
 <script>
@@ -475,6 +457,18 @@ export default {
   },
 
   methods: {
+    openHelp() {
+      const h = this.$createElement;
+      this.$msgbox({
+        title: 'Contact',
+        message: 
+          h('p', null, [
+            h('span', null, 'Please email to eyesoncalendar2@microsoft.com'),
+            h('p', null, 'for any question or further support.'),
+          ]),
+          showConfirmButton: false,
+      })
+    },
     goPortal() {
         const path = '/portal'
         this.$router.push({ path });
@@ -736,6 +730,14 @@ export default {
 </script>
 
 <style>
+.helpBtn.el-button {
+  position: fixed;
+  left:0px;
+  bottom:20px;
+  border: none;
+  font-size: larger; 
+  color: #909399;
+}
 .noMonth {
   min-height: 600px;
 }
@@ -897,20 +899,7 @@ button.customizedInitBtn:hover {
   min-width: 10px;
   word-wrap: break-word;
 }
-.fab2 {
-  position: fixed;
-  bottom: 20px;
-  border: none;
-  color: #8f9299;
-  font-weight: 700;
-  font-size: 30px;
-  cursor: pointer;
-  transition: all 0.1s ease-in-out;
-  background-color: inherit !important; 
-}
-
-.fab2:hover {
-  box-shadow: 0 6px 14px 0 #000;
-  transform: scale(1.05);
+.el-main {
+  padding-left: 0px;
 }
 </style>

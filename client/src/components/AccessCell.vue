@@ -178,7 +178,7 @@ export default {
                 if (response.tokenType === "access_token") {
                     callMSGraph(this.graphConfig.graphMeEndpoint, response.accessToken, this.graphAPICallback);
                 } else {
-                    console.log("token type is:" + response.tokenType);
+                    // console.log("token type is:" + response.tokenType);
                 }
             }
         },
@@ -197,7 +197,7 @@ export default {
 
         // process AAD result
         graphAPICallback(data) {
-            console.log("graphAPICallback");
+            // console.log("graphAPICallback");
             let result = JSON.stringify(data, null, 4);
             let jsonresult = JSON.parse(result);
             this.title = jsonresult.jobTitle
@@ -210,7 +210,7 @@ export default {
             {
                 this.su = true
             } 
-            console.log("jsonresult.jobTitle"+ jsonresult.jobTitle);
+            // console.log("jsonresult.jobTitle"+ jsonresult.jobTitle);
 
             if(jsonresult.jobTitle == null) {
                 // console.log("null jobTitle" + jsonresult);
@@ -226,7 +226,7 @@ export default {
                 )
             {
                 this.admin = true;
-                console.log('admin');
+                // console.log('admin');
                 this.getTeamName();
             }
             // this.getTeamName();
@@ -256,11 +256,11 @@ export default {
             }
             var that = this
             var apipath = '/api/getpod/' + new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + this.alias
-            console.log(apipath)
+            // console.log(apipath)
             return new Promise((resolve, reject) => {
                 this.$http.get(apipath)
                 .then((response)=> {
-                    console.log(response.data)
+                    // sconsole.log(response.data)
                     if(!(this.podSelect) && this.manualLoginBtn) {
                         this.displayName = response.data.name
                         if(response.data.principal == 'TM' || response.data.principal == 'TA') this.admin = true 
