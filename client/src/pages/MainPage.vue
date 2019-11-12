@@ -730,13 +730,18 @@ export default {
 </script>
 
 <style>
+.helpBtn.el-button:hover{
+  color:#252525;
+  background-color: azure;
+}
 .helpBtn.el-button {
   position: fixed;
   left:0px;
   bottom:20px;
   border: none;
   font-size: larger; 
-  color: #909399;
+  background-color: #252525;
+  color:rgb(255, 255, 255);
 }
 .noMonth {
   min-height: 600px;
