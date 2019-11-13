@@ -308,6 +308,7 @@
 <script>
 var store = require('store') // global store
 import Personsum from "@/components/PersonRowSum" // report
+import _ from 'lodash'
 export default {
     components: { Personsum },
     data: function () {
@@ -687,7 +688,7 @@ export default {
 
             if(this.admin) {
                 new Promise((resolve, reject) => {
-                    this.$http.post(this.addPath, this.addPayload)
+                    _.debounce(()=>this.$http.post(this.addPath, this.addPayload)
                     .then((response)=> {
                         if(response.data == 'Person is Added to the Team' || response.data == 'Permission is Added to the Person') { 
                             // the below lines is a stupid way to sync the display memeber which should be replaced by stocket.io later QwQ
@@ -700,7 +701,7 @@ export default {
                     })
                     .catch((error) => {
                     this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease turn to the developer.');
-                    })
+                    }))
                 }) 
             }
         },
@@ -711,7 +712,7 @@ export default {
                 this.delForm.alias = "(" + this.delForm.alias + ")";
             }
             return new Promise((resolve, reject) => {
-                this.$http.post(this.delPath, this.delPayload)
+                _.debounce(()=>this.$http.post(this.delPath, this.delPayload)
                 .then((response)=> {
                 if(response.data == 'Person is Removed from the Team'|| response.data == 'Permission is Removed from the Person')  {
                     // the below lines is a stupid way to sync the display memeber which should be replaced by stocket.io later QwQ
@@ -722,7 +723,7 @@ export default {
                 })
                 .catch((error)=> {
                 this.addFeedback('error', (error.toString()).split(':')[1]+ '\nPlease turn to the developer.')
-                })
+                }))
             })
         },
         sftPerson() {
