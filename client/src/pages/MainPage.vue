@@ -6,17 +6,17 @@
               <template slot="title">
                 <i class="el-icon-search"></i>
               </template>
-                <span style="color: azure;">
-                    Search Pod
-                    <el-autocomplete
-                      v-model="teamName"
-                      :fetch-suggestions="querySearchAsync"
-                      placeholder="SEARCH POD"
-                      @select="handleSelect"
-                      :autofocus="true"
-                    >
-                    </el-autocomplete>
-                </span>
+              <span style="color: azure;">
+                  Search Pod
+                  <el-autocomplete
+                    v-model="teamName"
+                    :fetch-suggestions="querySearchAsync"
+                    placeholder="SEARCH POD"
+                    @select="handleSelect"
+                    :autofocus="true"
+                  >
+                  </el-autocomplete>
+              </span>
             </el-submenu>
             <el-submenu index="2">
               <template slot="title">
@@ -26,12 +26,6 @@
                 <el-button @click="allMember = true;fteMember = false;vendorMember = false;">All Members</el-button>
                 <el-button @click="allMember = false;fteMember = true;vendorMember = false;">FTE Members</el-button>
                 <el-button @click="allMember = false;fteMember = false;vendorMember = true;">Vendor Members</el-button>
-            </el-submenu>
-            <el-submenu index="4">
-              <template slot="title">
-                <i @click="goPortal()" >A</i>
-              </template>
-                <el-button style="margin-left:10px; color: azure;" @click="goPortal()">Go to Portal</el-button>
             </el-submenu>
             <el-submenu index="3">
               <template slot="title">
@@ -48,6 +42,12 @@
                   <el-button icon="el-icon-setting" @click="showTool = false" ></el-button>
                 </el-tooltip>
               </div>
+            </el-submenu>
+            <el-submenu index="4">
+              <template slot="title">
+                <i @click="goPortal()" >A</i>
+              </template>
+              <el-button style="margin-left:10px; color: azure;" @click="goPortal()">Go to Portal</el-button>
             </el-submenu>
           </el-menu>
           <el-button class="helpBtn" @click="openHelp">?</el-button>
@@ -68,22 +68,22 @@
         </div>
         <el-dialog title="WFM Shift Data" width="70%" :visible.sync="dialogTableVisible" @open="openShiftTable" :before-close="beforeTableViewClose">
           <el-row id="copy-table" style="background-color:white; font-family: Calibri; color: #000000; font-size:15px">
-              <span >TeamShift Data</span>
-              <el-table :data=WFMData :default-sort = "{prop: 'alias', order: 'scending'}" border width="100%">
-                  <el-table-column prop="alias" label="Alias" :formatter="sliceAlise" width="120"> </el-table-column>
-                  <el-table-column prop="region"  label="Region" width="120"> {{copyShiftInfoData}} </el-table-column>
-                  <el-table-column prop="dayofshift" label="Days of Shift" width="150"> </el-table-column>
-                  <el-table-column prop="weekdayshift" label="Weekday Shift Time" > </el-table-column>
-                  <el-table-column prop="weekendshift" label="Weekend Shift Time" > </el-table-column>
-                  <el-table-column prop="lunchtime" label="Lunch Time" > </el-table-column>
-              </el-table>
-              <br>
-              <span>Individual Shift</span>
-              <el-table :data=WFMData border width="100%">
-                  <el-table-column prop="alias" label="Engineer" width="120" :formatter="sliceAlise"> </el-table-column>
-                  <el-table-column prop="status" label="Status"> </el-table-column>
-                  <el-table-column prop="date" label="Date"> </el-table-column>
-              </el-table>
+            <span >TeamShift Data</span>
+            <el-table :data=WFMData :default-sort = "{prop: 'alias', order: 'scending'}" border width="100%">
+                <el-table-column prop="alias" label="Alias" :formatter="sliceAlise" width="120"> </el-table-column>
+                <el-table-column prop="region"  label="Region" width="120"> {{copyShiftInfoData}} </el-table-column>
+                <el-table-column prop="dayofshift" label="Days of Shift" width="150"> </el-table-column>
+                <el-table-column prop="weekdayshift" label="Weekday Shift Time" > </el-table-column>
+                <el-table-column prop="weekendshift" label="Weekend Shift Time" > </el-table-column>
+                <el-table-column prop="lunchtime" label="Lunch Time" > </el-table-column>
+            </el-table>
+            <br>
+            <span>Individual Shift</span>
+            <el-table :data=WFMData border width="100%">
+                <el-table-column prop="alias" label="Engineer" width="120" :formatter="sliceAlise"> </el-table-column>
+                <el-table-column prop="status" label="Status"> </el-table-column>
+                <el-table-column prop="date" label="Date"> </el-table-column>
+            </el-table>
           </el-row>
           <span slot="footer" class="dialog-footer">
               <el-button @click=copyShiftInfo>{{ copyShiftInfoData }}</el-button>
@@ -100,62 +100,62 @@
               </el-row>
           </span>
         </el-dialog>
-      <h2 v-if="!month" v-loading="loading" class="noMonth welcome">{{message}}</h2>
-      <div  v-if="month" >
-          <!-- <el-tabs id="rolesTabview" v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane class="mainPanel" label="All Members" name="first"> -->
-               <div id="All_Members" v-show="allMember" class="mainPanel" >
-               <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
-               <div class="name"></div>
-               <div v-for="(p,index) in month.people[0].days"
-               :key="index" class="cellx">{{index+1}}</div>
-               </div>
-              <div id="tablehead" class="row tablehead">
-                <div class="name">On Duty</div>
-                <div v-for="(p,index) in month.people[0].days"
-                :key="index" class="cellx">{{percentage(index)}}%</div>
-              </div>
-              <person  v-for="(p,index) in month.people" :key="p._id"
-              :pindex="index" :person="p"  v-show="p.principle != 'TM' " :userName="displayName"
-              :openflag = "openflag" @opensync = "handleOpenPanel"/>
-              </div>
-            <!-- </el-tab-pane>
-            <el-tab-pane class="mainPanel" label="FTE Members" name="second"> -->
-              <div id="FTE_Members" v-show="fteMember" class="mainPanel">
-              <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
+        <h2 v-if="!month" v-loading="loading" class="noMonth welcome">{{message}}</h2>
+        <div  v-if="month" >
+            <!-- <el-tabs id="rolesTabview" v-model="activeName" @tab-click="handleClick">
+              <el-tab-pane class="mainPanel" label="All Members" name="first"> -->
+                <div id="All_Members" v-show="allMember" class="mainPanel" >
+                <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
                 <div class="name"></div>
                 <div v-for="(p,index) in month.people[0].days"
                 :key="index" class="cellx">{{index+1}}</div>
+                </div>
+                <div id="tablehead" class="row tablehead">
+                  <div class="name">On Duty</div>
+                  <div v-for="(p,index) in month.people[0].days"
+                  :key="index" class="cellx">{{percentage(index)}}%</div>
+                </div>
+                <person  v-for="(p,index) in month.people" :key="p._id"
+                :pindex="index" :person="p"  v-show="p.principle != 'TM' " :userName="displayName"
+                :openflag = "openflag" @opensync = "handleOpenPanel"/>
+                </div>
+              <!-- </el-tab-pane>
+              <el-tab-pane class="mainPanel" label="FTE Members" name="second"> -->
+                <div id="FTE_Members" v-show="fteMember" class="mainPanel">
+                <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
+                  <div class="name"></div>
+                  <div v-for="(p,index) in month.people[0].days"
+                  :key="index" class="cellx">{{index+1}}</div>
+                </div>
+                <div id="tablehead" class="row tablehead">
+                  <div class="name">On Duty</div>
+                  <div v-for="(p,index) in month.people[0].days"
+                  :key="index" class="cellx">{{percentageFTE(index)}}%</div>
+                </div>
+                <person  v-for="(p,index) in month.people" v-show="p.role == 'FTE' && p.principle != 'TM' "
+                :key="p._id" :pindex="index" :person="p" :userName="displayName"
+                :openflag = "openflag" @opensync = "handleOpenPanel"/>
               </div>
-              <div id="tablehead" class="row tablehead">
-                <div class="name">On Duty</div>
-                <div v-for="(p,index) in month.people[0].days"
-                :key="index" class="cellx">{{percentageFTE(index)}}%</div>
-              </div>
-              <person  v-for="(p,index) in month.people" v-show="p.role == 'FTE' && p.principle != 'TM' "
-              :key="p._id" :pindex="index" :person="p" :userName="displayName"
-              :openflag = "openflag" @opensync = "handleOpenPanel"/>
-            </div>
-            <!-- </el-tab-pane>
-            <el-tab-pane class="mainPanel" label="Vendor Members" name="third"> -->
-               <div id="Vendor_Members" v-show="vendorMember" class="mainPanel">
-               <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
-                <div class="name"></div>
-                <div v-for="(p,index) in month.people[0].days"
-                :key="index" class="cellx">{{index+1}}</div>
-              </div>
-              <div id="tablehead" class="row tablehead">
-                <div class="name">On Duty</div>
-                <div v-for="(p,index) in month.people[0].days"
-                :key="index" class="cellx">{{percentageVendor(index)}}%</div>
-              </div>
-              <person  v-for="(p,index) in month.people" v-show="p.role =='Vendor'"
-              :key="p._id" :pindex="index" :person="p" :userName="displayName"
-              :openflag = "openflag" @opensync = "handleOpenPanel"/>
-              </div>
-            <!-- </el-tab-pane>
-          </el-tabs> -->
-      </div>
+              <!-- </el-tab-pane>
+              <el-tab-pane class="mainPanel" label="Vendor Members" name="third"> -->
+                <div id="Vendor_Members" v-show="vendorMember" class="mainPanel">
+                <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
+                  <div class="name"></div>
+                  <div v-for="(p,index) in month.people[0].days"
+                  :key="index" class="cellx">{{index+1}}</div>
+                </div>
+                <div id="tablehead" class="row tablehead">
+                  <div class="name">On Duty</div>
+                  <div v-for="(p,index) in month.people[0].days"
+                  :key="index" class="cellx">{{percentageVendor(index)}}%</div>
+                </div>
+                <person  v-for="(p,index) in month.people" v-show="p.role =='Vendor'"
+                :key="p._id" :pindex="index" :person="p" :userName="displayName"
+                :openflag = "openflag" @opensync = "handleOpenPanel"/>
+                </div>
+              <!-- </el-tab-pane>
+            </el-tabs> -->
+        </div>
       </el-main>
 
   </el-container>
@@ -491,11 +491,6 @@ export default {
         return (link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       };
     },
-    handleSelect(item) {
-      const path = item.link
-      this.$router.push({ path });
-      location.reload();
-    },
     addMonth() {
       const path = moment(this.date, '/YYYY/M')
         .add(1, 'M')
@@ -507,82 +502,6 @@ export default {
         .subtract(1, 'M')
         .format('/YYYY/M');
       this.$router.push({ path });
-    },
-    init() {
-      if (this.admin === false) {
-        this.initDeny('noPermission', 'You have no permission to init this month.');
-      }
-      if (this.admin === true) {
-        const that = this;
-        let flag = false;
-        const newMon = (new Date().getMonth() + 2) % 12 ? (new Date().getMonth() + 2) % 12 : 12;
-        const thisMon = this.date.split('/');
-        if (newMon == thisMon[3]) { // 弱类型相等；
-          flag = true;
-        } else {
-          this.initDeny('forbid', 'Only the month after the current month can be initiated. The current month is ');          
-        }
-        if (flag) {
-          this.isLoading = true;
-          this.initUndo = false;
-          this.$http.post(this.apiPath, this.apiPayload);
-          setTimeout(() => {
-            that.isLoading = false;
-          }, 5000);
-        }
-      }
-    },
-    initDeny(type, msg) {
-      const mon = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      if (type === 'noPermission') {
-        this.$notify({
-          title: 'Notification',
-          message: msg,
-          position: 'top-left',
-          type: 'warning',
-        });
-      } else if (type === 'forbid') {
-        this.$notify({
-          title: 'Notification',
-          message: msg + mon[new Date().getMonth()],
-          position: 'top-left',
-          type: 'warning',
-        });
-      }
-    },
-    reload() {
-      if (this.initUndo === false) {
-        this.$http.post(this.apiPath2, this.apiPayload2);
-        setTimeout(() => {
-          location.reload();
-        }, 4000);
-      }
-    },
-    handleOpenPanel(msg) {
-      this.openflag = msg;
-    },
-    handleScroll() {
-      const header = document.getElementById('tablehead');
-      const sticky = header.offsetTop;
-      // console.log(window.pageYOffset);
-      if (window.pageYOffset <= 300) {
-        this.scrolled = false;
-        return;
-      }
-      if (window.pageYOffset >= sticky) {
-        this.scrolled = true;
-      } else {
-        this.scrolled = false;
-      }
-    },
-    handleClick(tab, event) {
-      // console.log(tab, event);
-    },
-        handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
     },
     extendCalendar() {
       try{
@@ -597,20 +516,6 @@ export default {
 
       }
     },
-    // callUndo(ev) {
-    //   if (ev.code !== "KeyZ" || ev.ctrlKey !== true) return;
-    //   else if (this.$history.length == 0) return;
-    //   {
-    //     var x = this.$history.pop();
-    //     var data = x.payload;
-    //     this.month.people[data.indexes.p].days[data.indexes.d].workDay =
-    //       data.workDay;
-    //     this.month.people[data.indexes.p].days[data.indexes.d].workType =
-    //       data.workType;
-    //     this.$http.post(x.path, x.payload);
-    //   }
-    // },
-    
     openShiftTable(){
       console.log('opening shift data');
       this.WFMData = this.month.people;
@@ -677,63 +582,94 @@ export default {
 
       // let shiftData = this.teamForm;
       // console.log(shiftData);
-  },
+    },
+    copyShiftInfo() {
+      console.log("copying shift data");
 
-  copyShiftInfo() {
-    console.log("copying shift data");
+      const table = document.getElementById('copy-table');
+      const range = document.createRange();
 
-    const table = document.getElementById('copy-table');
-    const range = document.createRange();
+      range.selectNode(table);  // define copy data is table
 
-    range.selectNode(table);  // define copy data is table
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) selection.removeAllRanges();
+      selection.addRange(range);
 
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) selection.removeAllRanges();
-    selection.addRange(range);
+      var successful = document.execCommand('copy');  // execute copy
+      var msg = successful ? 'successful' : 'unsuccessful';
 
-    var successful = document.execCommand('copy');  // execute copy
-    var msg = successful ? 'successful' : 'unsuccessful';
+      if(msg === 'successful'){
+          this.copyShiftInfoData = 'Copied!!'
+      }else {
+          this.addFeedback('notify', 'Sorry, failed to copy, please try manually');
+      }
 
-    if(msg === 'successful'){
-        this.copyShiftInfoData = 'Copied!!'
-    }else {
-        this.addFeedback('notify', 'Sorry, failed to copy, please try manually');
-    }
-
-    selection.removeAllRanges();  // remove selection
-  },
-  beforeTableViewClose() {
-      this.dialogTableVisible = false;
-      this.copyShiftInfoData = 'Copy Shift Data'
-  },
-  openOutlook() {
-      console.log("opening outlook");
-      window.location.href = "mailto:wfms@microsoft.com?subject=[REVIEW REQUIRED] WFM Update List";
-      this.dialogTableVisible = false;
-      this.copyShiftInfoData = 'Copy Shift Data'
-  },
-  sliceAlise(row, column) {
-    // console.log('slice alice');
-    return row.alias.slice(1, -1);
-  },
+      selection.removeAllRanges();  // remove selection
+    },
+    beforeTableViewClose() {
+        this.dialogTableVisible = false;
+        this.copyShiftInfoData = 'Copy Shift Data'
+    },
+    openOutlook() {
+        console.log("opening outlook");
+        window.location.href = "mailto:wfms@microsoft.com?subject=[REVIEW REQUIRED] WFM Update List";
+        this.dialogTableVisible = false;
+        this.copyShiftInfoData = 'Copy Shift Data'
+    },
+    sliceAlise(row, column) {
+      // console.log('slice alice');
+      return row.alias.slice(1, -1);
+    },
+    handleOpenPanel(msg) {
+      this.openflag = msg;
+    },
+    handleSelect(item) {
+      const path = item.link
+      this.$router.push({ path });
+      location.reload();
+    },
+    handleScroll() {
+      const header = document.getElementById('tablehead');
+      const sticky = header.offsetTop;
+      // console.log(window.pageYOffset);
+      if (window.pageYOffset <= 300) {
+        this.scrolled = false;
+        return;
+      }
+      if (window.pageYOffset >= sticky) {
+        this.scrolled = true;
+      } else {
+        this.scrolled = false;
+      }
+    },
+    handleClick(tab, event) {
+      // console.log(tab, event);
+    },
+    handleOpen(key, keyPath) {
+        console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    // callUndo(ev) {
+    //   if (ev.code !== "KeyZ" || ev.ctrlKey !== true) return;
+    //   else if (this.$history.length == 0) return;
+    //   {
+    //     var x = this.$history.pop();
+    //     var data = x.payload;
+    //     this.month.people[data.indexes.p].days[data.indexes.d].workDay =
+    //       data.workDay;
+    //     this.month.people[data.indexes.p].days[data.indexes.d].workType =
+    //       data.workType;
+    //     this.$http.post(x.path, x.payload);
+    //   }
+    // },
   },
 };
 </script>
 
 <style>
-.helpBtn.el-button:hover{
-  color:#252525;
-  background-color: azure;
-}
-.helpBtn.el-button {
-  position: fixed;
-  left:10px;
-  bottom:20px;
-  border: none;
-  font-size: larger; 
-  background-color: #252525;
-  color:rgb(144, 147, 153);
-}
+
 .noMonth {
   min-height: 600px;
 }
@@ -897,5 +833,18 @@ button.customizedInitBtn:hover {
 }
 .el-main {
   padding-left: 0px;
+}
+.helpBtn.el-button:hover{
+  color:#252525;
+  background-color: azure;
+}
+.helpBtn.el-button {
+  position: fixed;
+  left:10px;
+  bottom:20px;
+  border: none;
+  font-size: larger; 
+  background-color: #252525;
+  color:rgb(144, 147, 153);
 }
 </style>
