@@ -308,7 +308,6 @@
 <script>
 var store = require('store') // global store
 import Personsum from "@/components/PersonRowSum" // report
-import _ from 'lodash'
 export default {
     components: { Personsum },
     data: function () {
@@ -428,7 +427,7 @@ export default {
                     let res = await this.$http.get(`/api/${globalform.TeamName}/${globalform.Month}`);
                     this.socket = io({
                         query: {
-                        path: this.teamForm.Month,
+                            path: this.teamForm.Month,
                         },
                     });
                     this.socket.on("update", data => {
@@ -493,7 +492,6 @@ export default {
         topicView(type) {
             this.topic = type
         },
-
         cleanInitForm: function () {
             this.initForm.FTE = ""
             this.initForm.Vendor = ""
@@ -549,10 +547,6 @@ export default {
         },
         
         initFormatCheck: function () {
-            // var MontArr = (this.initForm.Month).split("/");
-            // if(MontArr.length != 2 || MontArr[1] < 1 || MontArr[1] > 12) {
-            //     return -1;
-            // }
             var str = this.initForm.TeamName
             var ilen
             for(ilen=0;ilen<str.length;ilen++)
@@ -684,11 +678,11 @@ export default {
             }
             if(this.addForm.alias[0] == "(" && this.addForm.alias[(this.addForm.alias).length-1] == ")") {
                 ;
-            }else { this.addForm.alias = "(" + this.addForm.alias + ")";}
+            }else { this.addForm.alias = "(" + this.addForm.alias + ")";} // bug here
 
             if(this.admin) {
                 new Promise((resolve, reject) => {
-                    _.debounce(()=>this.$http.post(this.addPath, this.addPayload)
+                    this.$http.post(this.addPath, this.addPayload)
                     .then((response)=> {
                         if(response.data == 'Person is Added to the Team' || response.data == 'Permission is Added to the Person') { 
                             // the below lines is a stupid way to sync the display memeber which should be replaced by stocket.io later QwQ
@@ -701,7 +695,7 @@ export default {
                     })
                     .catch((error) => {
                     this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease turn to the developer.');
-                    }))
+                    })
                 }) 
             }
         },
@@ -712,7 +706,7 @@ export default {
                 this.delForm.alias = "(" + this.delForm.alias + ")";
             }
             return new Promise((resolve, reject) => {
-                _.debounce(()=>this.$http.post(this.delPath, this.delPayload)
+                this.$http.post(this.delPath, this.delPayload)
                 .then((response)=> {
                 if(response.data == 'Person is Removed from the Team'|| response.data == 'Permission is Removed from the Person')  {
                     // the below lines is a stupid way to sync the display memeber which should be replaced by stocket.io later QwQ
@@ -723,7 +717,7 @@ export default {
                 })
                 .catch((error)=> {
                 this.addFeedback('error', (error.toString()).split(':')[1]+ '\nPlease turn to the developer.')
-                }))
+                })
             })
         },
         sftPerson() {

@@ -5,12 +5,13 @@ import router from './router'
 import Axios from 'axios'
 import Vuex from 'vuex'
 import AsyncComputed from 'vue-async-computed'
-import state from './store.js'
+
 import Popover from 'vue-js-popover'
 import ElementUI from 'element-ui';
 import App from './App'
 import 'element-ui/lib/theme-chalk/index.css';
-import locale from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale/lang/en';
+import state from './store';
 
 Vue.use(require('@websanova/vue-upload'));
 
