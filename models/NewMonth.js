@@ -29,7 +29,7 @@ var personSchema = new Schema({
 var monthSchema = new Schema({
   customDayType: {
     Type: [],
-    color: [],
+    color: []
   },
   year: Number,
   month: Number,
