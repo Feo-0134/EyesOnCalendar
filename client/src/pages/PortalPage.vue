@@ -189,6 +189,10 @@
                     <el-button type="primary" icon="el-icon-minus" circle v-on:click="delPersonView('None',2)"></el-button>
                     </div>
                 </el-form-item>
+                <el-form-item label="Custom DayType">
+                    <el-input v-model="teamForm.customDayType" ></el-input>
+                    <el-button type="primary" v-on:click="setCustomDayType()">Update</el-button>
+                </el-form-item>
             </el-form>
             <el-form v-if="topic === 2"  :model="teamForm" label-width="140px">
                 <el-form-item label="Month">
