@@ -16,14 +16,7 @@ require('dotenv').config()
 const getTeamName = require('./services/getTeamName.js')
 const updateRecords = require('./services/updateRecords.js')
 
-// env params
 var staticPath = './client/dist/'
-// if (process.env.NODE_ENV === 'production' ||
-//  process.env.NODE_ENV === undefined) {
-//   staticPath = './client/dist/'
-// } else {
-//   staticPath = './client/dist/'
-// }
 
 // db connection
 const db = require('./mongodb')

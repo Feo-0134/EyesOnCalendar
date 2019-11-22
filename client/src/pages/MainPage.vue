@@ -249,7 +249,7 @@ export default {
           this.message = 'Month not found';
           const h = this.$createElement
           this.$notify({
-            title: 'Click to Init Calendar',
+            title: 'Do you want to initiate this month data?',
             message: h('p', null, [
                 [
                   h('el-button', {
