@@ -16,7 +16,14 @@ require('dotenv').config()
 const getTeamName = require('./services/getTeamName.js')
 const updateRecords = require('./services/updateRecords.js')
 
+// env params
 var staticPath = './client/dist/'
+// if (process.env.NODE_ENV === 'production' ||
+//  process.env.NODE_ENV === undefined) {
+//   staticPath = './client/dist/'
+// } else {
+//   staticPath = './client/dist/'
+// }
 
 // db connection
 const db = require('./mongodb')
@@ -87,7 +94,7 @@ router.post('/:pod/extendCalendar/:year/:month',
   upload.any('csv'), bodyParser(), updateRecords.extendCalendar)
 
 router.post('/:pod/setCustomDayType/:year/:month',
-  bodyParser(), updateRecords.setCustomDayType)
+ bodyParser(), updateRecords.setCustomDayType)
 
 io.on('connection', socket => {
   socket.join(socket.handshake.query.path)

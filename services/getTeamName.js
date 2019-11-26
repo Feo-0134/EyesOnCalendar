@@ -7,7 +7,7 @@ const routerTeamName = async (ctx) => {
   var podName = 'default'
   var name = 'default'
   var principle = 'default'
-  try {
+  try{
     var monthRecord = await Month.find({ year: p.year, month: p.month })
     monthRecord.forEach((month) => {
       month.people.forEach((person) => {
@@ -20,7 +20,7 @@ const routerTeamName = async (ctx) => {
       if (flag === 1) { podName = month.pod; flag = 0 }
     })
     ctx.body = { pod: podName, name: name, principle: principle }
-  } catch (e) {
+  }catch(e) {
     ctx.status = 404
     ctx.body = e
     console.log(e)
@@ -68,8 +68,8 @@ const listAllTeamName = async (ctx) => {
       var linkList = new Array()
       result.forEach(element => {
         linkList.push({ value: element.pod, link: '/' + element.pod + '/' + p.year + '/' + p.month })
+        ctx.body = linkList
       })
-      ctx.body = linkList
     }
   } catch (e) {
     ctx.status = 404

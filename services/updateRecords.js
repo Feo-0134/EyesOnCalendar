@@ -15,7 +15,7 @@ function newMonth (year, month, pod, daylock, people, customDayType) {
     pod: pod,
     daylock: daylock,
     people: people,
-    customDayType: customDayType
+    customDayType: customDayType,
   })
 }
 
@@ -127,7 +127,7 @@ async function modifyTemplate (year, month, peopleSrc) {
 
   var src = await fs.createReadStream(filepath)
   var people = await json(src)
-  console.log(peopleSrc[0].alias)
+  console.log(peopleSrc[0].alias);
   people[0].alias = peopleSrc[0].alias
   people[0].name = peopleSrc[0].name
   people[0].role = peopleSrc[0].role
@@ -319,7 +319,7 @@ const initCalendar = async (ctx) => {
   await modifyTemplate(Number(p.year), Number(p.month), b.people)
   // eslint-disable-next-line no-array-constructor
   var daylock = new Array()
-  var payload = newMonth(p.year, p.month, p.pod, daylock, people,
+  var payload = newMonth(p.year, p.month, p.pod, daylock, people, 
     { Type: ['C1', 'C2'], color: ['#007EA7', '#003459'] })
   try {
     await payload.save()
@@ -336,7 +336,7 @@ const extendCalendar = async (ctx) => {
   try {
     // (new Date().getMonth() + 2) % 12 ? (new Date().getMonth() + 2) % 12 : 12;
     var lastMonth = ((p.month - 1) % 12) ? (p.month - 1) % 12 : 12
-    var lastYear = (lastMonth === 12) ? (p.year - 1) : p.year
+    var lastYear = lastMonth === 12 ? p.year - 1 : p.year
     var currentMonth =
       await Month.findOne({ year: lastYear, month: lastMonth, pod: p.pod })
     if (currentMonth === null) {
@@ -358,15 +358,14 @@ const extendCalendar = async (ctx) => {
 const setCustomDayType = async (ctx) => {
   var p = ctx.params
   var b = ctx.request.body
-  var currentMonth =
-  await Month.findOne({ year: p.year, month: p.month, pod: p.pod })
-  console.log(b)
-  currentMonth.customDayType = b.customDayType
   try {
+    var currentMonth =
+      await Month.findOne({year: p.year, month: p.month, pod: p.pod})
+    currentMonth.customDayType = b.customDayType;
     const payload = currentMonth
     await payload.save()
     ctx.body = 'success'
-  } catch (e) {
+  }catch(e) {
     console.log(e)
     ctx.body = e
   }
