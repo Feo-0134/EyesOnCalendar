@@ -339,7 +339,10 @@ const extendCalendar = async (ctx) => {
     var lastYear = lastMonth === 12 ? p.year - 1 : p.year
     var currentMonth =
       await Month.findOne({ year: lastYear, month: lastMonth, pod: p.pod })
-    console.log(currentMonth)
+    if (currentMonth === null) {
+      ctx.body = 'no last month data'
+      return
+    }
     var people =
       await modifyTemplate(Number(p.year), Number(p.month), currentMonth.people)
     // eslint-disable-next-line no-array-constructor
