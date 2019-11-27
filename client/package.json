@@ -17,7 +17,7 @@
     "axios": "^0.18.0",
     "element-ui": "^2.10.1",
     "font-awesome": "^4.7.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "lodash.debounce": "^4.0.8",
     "moment": "^2.22.1",
     "msal": "^0.2.4",
