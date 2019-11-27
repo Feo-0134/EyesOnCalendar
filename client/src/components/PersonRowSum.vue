@@ -5,7 +5,7 @@ Feature 5 Monthly report
   <div class="row">
       <div class="cellx name">{{displayName}}</div>
       <div class = "celly ">
-        {{fullDayCnt(['W','MS','NS','PO','PM']) +
+        {{fullDayCnt(['W','MS','NS','PO','PM','WS']) +
          halfDayCnt(["H(A)","H(M)","HMSL","HASL","HMAL","HAAL"])}}
       </div>
       <div class = "celly ">{{fullDayCnt(['MS','PM'])}}</div>
@@ -15,8 +15,8 @@ Feature 5 Monthly report
         {{fullDayCnt(['SL','AL','V']) +
          halfDayCnt(["H(A)","H(M)","HMSL","HASL","HMAL","HAAL"])}}
       </div>
-      <div class = "celly ">{{fullDayCnt(['PH'])}}</div>
-      <div class = "celly ">{{fullDayCnt(['PO', 'PM'])}}</div>
+      <div class = "celly ">{{fullDayCnt(['PH','Sft'])}}</div>
+      <div class = "celly ">{{fullDayCnt(['PO','PM'])}}</div>
   </div>
 </template>
 

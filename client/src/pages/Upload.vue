@@ -5,7 +5,7 @@
       <div class="input-box">
         <input type="file" class="inputfile" id="file" ref="file" v-on:change="handleFileUpload()"/>
         <label for="file">{{inputLabel}}</label>
-        <button class="subbut" v-bind:disabled="datepicked=='' || file==''" v-on:click="submitFile()">Submit</button>
+        <button class="subbut" :disabled="datepicked=='' || file==''" v-on:click="submitFile()">Submit</button>
       </div>
       <h1>
         <span v-if="status==1">Success!</span>

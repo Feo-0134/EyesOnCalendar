@@ -5,11 +5,8 @@
   "author": "Petre <petrepopescu21@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
-    "build": "node build/build.js",
-    "server": "cd server && nodemon server.js",
-    "serve": "concurrently --kill-others \"npm run dev\" \"npm run server\""
+    "build": "node build/build.js"
   },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^1.3.0",

@@ -1,77 +1,120 @@
 <template>
-  <el-container>
-      <el-aside width="65px">
-          <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :default-openeds="['2']" :collapse="true">
-            <el-submenu index="1">
-              <template slot="title">
-                <i class="el-icon-search"></i>
-              </template>
-              <span style="color: azure;">
-                  Search Pod
-                  <el-autocomplete
-                    v-model="teamName"
-                    :fetch-suggestions="querySearchAsync"
-                    placeholder="SEARCH POD"
-                    @select="handleSelect"
-                    :autofocus="true"
-                  >
-                  </el-autocomplete>
-              </span>
-            </el-submenu>
-            <el-submenu index="2">
-              <template slot="title">
-                <i class="el-icon-view"></i>
-              </template>
-                <h4 style="margin-left:10px; color: azure;" >View Filter</h4>
-                <el-button @click="allMember = true;fteMember = false;vendorMember = false;">All Members</el-button>
-                <el-button @click="allMember = false;fteMember = true;vendorMember = false;">FTE Members</el-button>
-                <el-button @click="allMember = false;fteMember = false;vendorMember = true;">Vendor Members</el-button>
-            </el-submenu>
-            <el-submenu index="3">
-              <template slot="title">
-              <i class="el-icon-more"></i>
-              </template>
-              <h4 style="margin-left:10px; color: azure;" >More Tools</h4>
-              <div>
-                <el-tooltip v-show="admin" class="item" effect="light" content="WFM report" placement="right">
-                  <el-button icon="el-icon-message" @click="dialogTableVisible = true" ></el-button>
-                </el-tooltip>
-              </div>
-              <div>
-                <el-tooltip v-show="admin" class="item" effect="light" content="Personal Setting" placement="right">
-                  <el-button icon="el-icon-setting" @click="showTool = false" ></el-button>
-                </el-tooltip>
-              </div>
-            </el-submenu>
-            <el-submenu index="4">
-              <template slot="title">
-                <i @click="goPortal()" >A</i>
-              </template>
-              <el-button style="margin-left:10px; color: azure;" @click="goPortal()">Go to Portal</el-button>
-            </el-submenu>
-          </el-menu>
-          <el-button class="helpBtn" @click="openHelp">?</el-button>
-      </el-aside>
-      <el-main>
-        <div class = "head">
+  <div>
+      <div class = "head">
         <div class="testClass">
-            <!-- <el-button v-show="admin & showTool" @click="goPortal()">Portal</el-button> -->
+          <div>
+            <span>
+                <el-autocomplete
+                  v-model="teamName"
+                  :fetch-suggestions="querySearchAsync"
+                  placeholder="SEARCH POD"
+                  @select="handleSelect"
+                >
+                </el-autocomplete>
+            </span>
+            <el-button type="primary" v-show="admin" @click="goPortal()">Portal</el-button>
+          </div>
         </div>
-        </div>
-        <div class="welcome">
-          <p>Welcome, {{displayName}} {{displayTitle}}</p>
-          <h1>
-            <a :href="prevMonth" class="pointer">&lt;</a>
-            {{prettyDate}}
-            <a :href="nextMonth" class="pointer">&gt;</a>
-          </h1>
-        </div>
-        <el-dialog title="WFM Shift Data" width="70%" :visible.sync="dialogTableVisible" @open="openShiftTable" :before-close="beforeTableViewClose">
-          <el-row id="copy-table" style="background-color:white; font-family: Calibri; color: #000000; font-size:15px">
+      </div>
+      <div class="testClassII welcome">
+        <p>Welcome, {{displayName}} {{displayTitle}}</p>
+      </div>
+      <h1 class="dateTop">
+        <a :href="prevMonth" class="pointer">&lt;</a>
+        {{prettyDate}}
+        <a :href="nextMonth" class="pointer">&gt;</a>
+        <el-tooltip v-show="admin" class="item" effect="light" content="Click to view WFM report" placement="right">
+          <el-button class="WFbutton" type="primary" icon="el-icon-message" size="mini" @click="dialogTableVisible = true" ></el-button>
+        </el-tooltip>
+      </h1>
+        <el-row :gutter="20" class="sketch-up" v-show="true">
+          <el-col :span="14" :offset="9" class="sketch-up-content">
+              <div class="grid-content bg-purple">
+                  <el-row :gutter="20" class="cmt-roll">
+                  <el-col :span="1">
+                      <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: rgb(85, 112, 55);">MS</div>
+                          <div class = "comment">Morning Shift</div>
+                      </div>
+                  </el-col>
+                  <el-col :span="1"><div class="grid-content bg-purple-light">
+                          <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #3b4d50;">NS</div>
+                          <div class = "comment">Night Shift</div>
+                      </div>    
+                  </div></el-col>          
+                  <el-col :span="1"><div class="grid-content bg-purple-light">
+                          <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #513566;">SL</div>
+                          <div class = "comment">Sick Leave</div>
+                      </div>  
+                      </div></el-col>
+                  <el-col :span="1"><div class="grid-content bg-purple-light">
+                          <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #513566;">AL</div>
+                          <div class = "comment">Annual Leave</div>
+                      </div>      
+                  </div></el-col>
+                  <el-col :span="1"><div class="grid-content bg-purple-light">
+                          <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #360136;">H(M)</div>
+                          <div class = "comment">Morning SL</div>
+                      </div>      
+                  </div></el-col>
+                  <el-col :span="1"><div class="grid-content bg-purple-light">
+                          <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #360136;">H(A)</div>
+                          <div class = "comment">Afternoon SL</div>
+                  </div>  
+                  </div></el-col>
+                        
+                  <el-col :span="1"><div class="grid-content bg-purple-light">
+                          <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #b36a01;">PO</div>
+                          <div class = "comment">Holiday OnDuty</div>
+                      </div>  
+                      </div></el-col>
+                  <el-col :span="1"><div class="grid-content bg-purple-light">
+                          <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #b36a01;">PM</div>
+                          <div class = "comment">Holiday MS</div>
+                      </div>      
+                  </div></el-col>
+                  <el-col :span="1"><div class="grid-content bg-purple-light">
+                          <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #375c8c;"> T </div>
+                          <div class = "comment">Training</div>
+                      </div>      
+                  </div></el-col>
+                  <el-col :span="1"><div class="grid-content bg-purple-light">
+                          <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #8c2230;">PH</div>
+                          <div class = "comment">Public Holiday</div>
+                  </div>  
+                  </div></el-col>
+                  <el-col :span="1">
+                      <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #62474c;">H(M)</div>
+                          <div class = "comment">Morning AL</div>
+                      </div>
+                  </el-col>
+                  <el-col :span="1"><div class="grid-content bg-purple-light">
+                          <div class="grid-content bg-purple-light">
+                          <div class = "cmtCell" style="display:inline; width:10px; height:50%; background-color: #62474c;">H(A)</div>
+                          <div class = "comment">Afternoon AL</div>
+                      </div>    
+                  </div></el-col>   
+                  </el-row>
+              </div>
+          </el-col>
+        </el-row>
+        
+      <el-dialog title="WFM Shift Data" width="70%" :visible.sync="dialogTableVisible" @open="openShiftTable" :before-close="beforeTableViewClose">
+        <el-row id="copy-table" style="background-color:white; font-family: Calibri; color: #000000; font-size:15px">
             <span >TeamShift Data</span>
             <el-table :data=WFMData :default-sort = "{prop: 'alias', order: 'scending'}" border width="100%">
                 <el-table-column prop="alias" label="Alias" :formatter="sliceAlise" width="120"> </el-table-column>
-                <el-table-column prop="region"  label="Region" width="120"> {{copyShiftInfoData}} </el-table-column>
+                <el-table-column prop="region"  label="Region" width="120"> </el-table-column>
                 <el-table-column prop="dayofshift" label="Days of Shift" width="150"> </el-table-column>
                 <el-table-column prop="weekdayshift" label="Weekday Shift Time" > </el-table-column>
                 <el-table-column prop="weekendshift" label="Weekend Shift Time" > </el-table-column>
@@ -84,82 +127,89 @@
                 <el-table-column prop="status" label="Status"> </el-table-column>
                 <el-table-column prop="date" label="Date"> </el-table-column>
             </el-table>
-          </el-row>
-          <span slot="footer" class="dialog-footer">
-              <el-button @click=copyShiftInfo>{{ copyShiftInfoData }}</el-button>
-              <el-button type="primary" @click=openOutlook>Open Outlook</el-button>
-              <el-row :gutter="24">
-                <el-col :span="10" :offset="14">
-                  <el-alert
-                    title="please click copy shift data first and then click open outlook!"
-                    type="warning" 
-                    :closable="false"
-                    center>
-                  </el-alert>
-                </el-col>
-              </el-row>
-          </span>
-        </el-dialog>
-        <h2 v-if="!month" v-loading="loading" class="noMonth welcome">{{message}}</h2>
-        <div  v-if="month" >
-            <!-- <el-tabs id="rolesTabview" v-model="activeName" @tab-click="handleClick">
-              <el-tab-pane class="mainPanel" label="All Members" name="first"> -->
-                <div id="All_Members" v-show="allMember" class="mainPanel" >
-                <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
+        </el-row>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click=copyShiftInfo>{{ copyShiftInfoData }}</el-button>
+            <el-button type="primary" @click=openOutlook>Open Outlook</el-button>
+            <el-row :gutter="24">
+              <el-col :span="10" :offset="14">
+                <el-alert
+                  title="please click copy shift data first and then click open outlook!"
+                  type="warning" 
+                  :closable="false"
+                  center>
+                </el-alert>
+              </el-col>
+            </el-row>
+            
+        </span>
+      </el-dialog>
+      <el-dialog
+        v-show="admin"
+        title="EyesOnCalendar"
+        :visible.sync="dialogVisible"
+        width="30%">
+        <span>Do you want to initiate this month data?</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="dialogVisible = false; extendCalendar()">Confirm</el-button>
+        </span>
+      </el-dialog>
+      <h2 v-if="!month" v-loading="loading"  class="noMonth welcome" >{{message}}</h2>
+      <div  v-if="month">
+          <el-tabs id="rolesTabview" v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane class="mainPanel" label="All Members" name="first">
+               <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
+               <div class="name"></div>
+               <div v-for="(p,index) in month.people[0].days"
+               :key="index" class="cellx">{{index+1}}</div>
+               </div>
+              <div id="tablehead" class="row tablehead">
+                <div class="name">On Duty</div>
+                <div v-for="(p,index) in month.people[0].days"
+                :key="index" class="cellx"  v-bind:class="{ percentageStageNotify: percentage(index)<80 && percentage(index)>=60,percentageStageWarn: percentage(index)<60}" >{{percentage(index)}}%</div>
+              </div>
+              <person  v-for="(p,index) in month.people" :key="p._id"
+              :pindex="index" :person="p"  v-show="p.principle != 'TM' " :userName="displayName" :custom="month.customDayType"
+              :openflag = "openflag" @opensync = "handleOpenPanel"/>
+            </el-tab-pane>
+            <el-tab-pane class="mainPanel" label="FTE Members" name="second">
+              <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
                 <div class="name"></div>
                 <div v-for="(p,index) in month.people[0].days"
                 :key="index" class="cellx">{{index+1}}</div>
-                </div>
-                <div id="tablehead" class="row tablehead">
-                  <div class="name">On Duty</div>
-                  <div v-for="(p,index) in month.people[0].days"
-                  :key="index" class="cellx">{{percentage(index)}}%</div>
-                </div>
-                <person  v-for="(p,index) in month.people" :key="p._id"
-                :pindex="index" :person="p"  v-show="p.principle != 'TM' " :userName="displayName"
-                :openflag = "openflag" @opensync = "handleOpenPanel"/>
-                </div>
-              <!-- </el-tab-pane>
-              <el-tab-pane class="mainPanel" label="FTE Members" name="second"> -->
-                <div id="FTE_Members" v-show="fteMember" class="mainPanel">
-                <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
-                  <div class="name"></div>
-                  <div v-for="(p,index) in month.people[0].days"
-                  :key="index" class="cellx">{{index+1}}</div>
-                </div>
-                <div id="tablehead" class="row tablehead">
-                  <div class="name">On Duty</div>
-                  <div v-for="(p,index) in month.people[0].days"
-                  :key="index" class="cellx">{{percentageFTE(index)}}%</div>
-                </div>
-                <person  v-for="(p,index) in month.people" v-show="p.role == 'FTE' && p.principle != 'TM' "
-                :key="p._id" :pindex="index" :person="p" :userName="displayName"
-                :openflag = "openflag" @opensync = "handleOpenPanel"/>
               </div>
-              <!-- </el-tab-pane>
-              <el-tab-pane class="mainPanel" label="Vendor Members" name="third"> -->
-                <div id="Vendor_Members" v-show="vendorMember" class="mainPanel">
-                <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
-                  <div class="name"></div>
-                  <div v-for="(p,index) in month.people[0].days"
-                  :key="index" class="cellx">{{index+1}}</div>
-                </div>
-                <div id="tablehead" class="row tablehead">
-                  <div class="name">On Duty</div>
-                  <div v-for="(p,index) in month.people[0].days"
-                  :key="index" class="cellx">{{percentageVendor(index)}}%</div>
-                </div>
-                <person  v-for="(p,index) in month.people" v-show="p.role =='Vendor'"
-                :key="p._id" :pindex="index" :person="p" :userName="displayName"
-                :openflag = "openflag" @opensync = "handleOpenPanel"/>
-                </div>
-              <!-- </el-tab-pane>
-            </el-tabs> -->
-        </div>
-      </el-main>
-
-  </el-container>
-  
+              <div id="tablehead" class="row tablehead">
+                <div class="name">On Duty</div>
+                <div v-for="(p,index) in month.people[0].days"
+                :key="index" class="cellx"  v-bind:class="{ percentageStageNotify: percentageFTE(index)<80 && percentage(index)>=60,percentageStageWarn: percentageFTE(index)<60}">{{percentageFTE(index)}}%</div>
+              </div>
+              <person  v-for="(p,index) in month.people" v-show="p.role == 'FTE' && p.principle != 'TM' "
+              :key="p._id" :pindex="index" :person="p" :userName="displayName" :custom="month.customDayType"
+              :openflag = "openflag" @opensync = "handleOpenPanel"/>
+            </el-tab-pane>
+            <el-tab-pane class="mainPanel" label="Vendor Members" name="third">
+               <div id="tablehead" :class="{sticky: scrolled}" class="row tablehead">
+                <div class="name"></div>
+                <div v-for="(p,index) in month.people[0].days"
+                :key="index" class="cellx">{{index+1}}</div>
+              </div>
+              <div id="tablehead" class="row tablehead">
+                <div class="name">On Duty</div>
+                <div v-for="(p,index) in month.people[0].days"
+                :key="index" class="cellx"  v-bind:class="{ percentageStageNotify: percentageVendor(index)<80 && percentage(index)>=60,percentageStageWarn: percentageVendor(index)<60}">{{percentageVendor(index)}}%</div>
+              </div>
+              <person  v-for="(p,index) in month.people" v-show="p.role =='Vendor'"
+              :key="p._id" :pindex="index" :person="p" :userName="displayName" :custom="month.customDayType"
+              :openflag = "openflag" @opensync = "handleOpenPanel"/>
+            </el-tab-pane>
+          </el-tabs>
+      </div>
+      <help-screen />
+      <!-- <transition name="fade">
+        <loading v-if="isLoading"></loading>
+      </transition> -->
+  </div>
 </template>
 
 <script>
@@ -167,7 +217,8 @@ import moment from 'moment';
 import Person from '@/components/PersonRow';
 import HelpScreen from '@/components/HelpScreen';
 // import Loading from '@/components/LoadButton';
-var store = require('store')
+var axios = require('axios');
+var store = require('store');
 export default {
   components: { Person, HelpScreen },
   data() {
@@ -185,17 +236,12 @@ export default {
       openflag: false,
       state: null,
       teamName: this.$router.currentRoute.path.split('/')[1],
-      allMember: true,
-      fteMember: false,
-      vendorMember: false,
       loading:false,
-      open:false,
-      showTool: true,
       teamForm: {
         MorningShift: '',
         NightShift: '',
       },
-
+      dialogVisible: false,
       dialogTableVisible: false,
       copyShiftInfoData: 'Copy Shift Data',
       TeamShiftText: "Team Shift",
@@ -223,7 +269,7 @@ export default {
           normal: "12:30~13:30pm",
           morningshift: "11:30~12:30pm",
       },
-
+      TeamEmails: []
     };
   },
   asyncComputed: {
@@ -242,41 +288,30 @@ export default {
             this.month.people[data.indexes.p].days[data.indexes.d].workType = data.workType;
           });
           res.data.people = res.data.people.sort((x, y) => x.name.localeCompare(y.name));
+          
+          // console.log(res.data.people);
+          for(let key of res.data.people){
+            let newalias = key.alias.slice(1, -1);
+            // console.log(newalias);
+            this.TeamEmails.push(newalias + "@microsoft.com");
+          }
+          // console.log(this.TeamEmails);
+          
+          this.getCaeNumber();
+
           return res.data;
         } catch (e) {
           console.log(e);
           this.socket = null;
           this.message = 'Month not found';
-          const h = this.$createElement
-          this.$notify({
-            title: 'Do you want to initiate this month data?',
-            message: h('p', null, [
-                [
-                  h('el-button', {
-                    style: {
-                      float: 'right',
-                      'margin-top': '15px'
-                    },
-                    attrs: {
-                    },
-                    on: {
-                      click: this.extendCalendar
-                    }
-                  }, 'Confirm')
-                ]
-            ]),
-            position: 'top-left',
-            duration: 0,
-            offset: 20,
-            dangerouslyUseHTMLString: true
-          })
+          this.dialogVisible = true
           return null;
         }
       },
       watch() {
         this.changed;
       },
-    },
+    }
   },
   computed: {
     displayName() {
@@ -361,7 +396,8 @@ export default {
           || this.month.people[b].days[val].workType === 'MS'
           || this.month.people[b].days[val].workType === 'NS'
           || this.month.people[b].days[val].workType === 'PO'
-          || this.month.people[b].days[val].workType === 'PM') {
+          || this.month.people[b].days[val].workType === 'PM'
+          || this.month.people[b].days[val].workType === 'WS') {
             sum += 1;
           }
         }
@@ -377,7 +413,8 @@ export default {
           || this.month.people[b].days[val].workType === 'MS'
           || this.month.people[b].days[val].workType === 'NS'
           || this.month.people[b].days[val].workType === 'PO'
-          || this.month.people[b].days[val].workType === 'PM')) {
+          || this.month.people[b].days[val].workType === 'PM'
+          || this.month.people[b].days[val].workType === 'WS')) {
             sum += 1;
           }
         }
@@ -394,7 +431,8 @@ export default {
           || this.month.people[b].days[val].workType === 'MS'
           || this.month.people[b].days[val].workType === 'NS'
           || this.month.people[b].days[val].workType === 'PO'
-          || this.month.people[b].days[val].workType === 'PM')) {
+          || this.month.people[b].days[val].workType === 'PM'
+          || this.month.people[b].days[val].workType === 'WS')) {
             sum += 1;
           }
         }
@@ -448,17 +486,55 @@ export default {
   },
 
   methods: {
-    openHelp() {
-      const h = this.$createElement;
-      this.$msgbox({
-        title: 'Contact',
-        message: 
-          h('p', null, [
-            h('span', null, 'Please email to eyesoncalendar2@microsoft.com'),
-            h('p', null, 'for any question or further support.'),
-          ]),
-          showConfirmButton: false,
-      })
+    addFeedback(type, msg) {
+        const h = this.$createElement;
+        if(type == 'error') {
+            this.$notify.error({
+                title:'Error',
+                message: msg,
+                position:'top-left',
+                duration: 0
+            });
+        }
+        if(type == 'notify') {
+            this.$notify({
+                title:'Notification',
+                message: msg,
+                position:'top-left',
+                type:'warning',
+                duration: 6000
+            });
+        }
+        if(type == 'success') {
+            this.$notify({
+                title: 'Success',
+                message: h('i', { style: 'color: teal'}, msg),
+                position:'top-left',
+                type: 'success',
+                
+            });
+        }
+    },
+    extendCalendar() {
+      try{
+        this.loading = true
+        var that = this
+        this.$http.post("/api/"+this.teamName+"/extendCalendar/"+this.$router.currentRoute.path.split('/')[2]+'/'+this.$router.currentRoute.path.split('/')[3])
+        .then((response)=>{
+          // location.reload();
+          console.log(response)
+          if(response.data === 'no last month data') {
+            that.loading = false
+            that.addFeedback('notify', 'Please initiate last month data.');
+            return;
+          }
+        })
+        setTimeout(() => {
+          if(this.loading === true ) location.reload();
+        }, 4000);
+      }catch(e){
+        console.log(e)
+      }
     },
     goPortal() {
         const path = '/portal'
@@ -472,7 +548,7 @@ export default {
           this.links = response.data;
         })
         .catch((error) => {
-            this.addFeedback('error', 'System Error. Please turn to the developer.');
+            this.addFeedback('error', 'System Error. Please contact eyesoncalendar team.');
             return [];
         })
       })
@@ -491,6 +567,11 @@ export default {
         return (link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       };
     },
+    handleSelect(item) {
+      const path = item.link
+      this.$router.push({ path });
+      location.reload();
+    },
     addMonth() {
       const path = moment(this.date, '/YYYY/M')
         .add(1, 'M')
@@ -503,19 +584,89 @@ export default {
         .format('/YYYY/M');
       this.$router.push({ path });
     },
-    extendCalendar() {
-      try{
-        this.loading = true
-        // console.log("/"+this.teamName+"/extendCalendar/"+this.$router.currentRoute.path.split('/')[2]+'/'+this.$router.currentRoute.path.split('/')[3])
-        this.$http.post("/api/"+this.teamName+"/extendCalendar/"+this.$router.currentRoute.path.split('/')[2]+'/'+this.$router.currentRoute.path.split('/')[3])
-        setTimeout(() => {
-          location.reload();
-          this.loading = false
-        }, 7000);
-      }catch(e){
-
+    init() {
+      if (this.admin === false) {
+        this.initDeny('noPermission', 'You have no permission to init this month.');
+      }
+      if (this.admin === true) {
+        const that = this;
+        let flag = false;
+        const newMon = (new Date().getMonth() + 2) % 12 ? (new Date().getMonth() + 2) % 12 : 12;
+        const thisMon = this.date.split('/');
+        if (newMon == thisMon[3]) { // 弱类型相等；
+          flag = true;
+        } else {
+          this.initDeny('forbid', 'Only the month after the current month can be initiated. The current month is ');          
+        }
+        if (flag) {
+          this.isLoading = true;
+          this.initUndo = false;
+          this.$http.post(this.apiPath, this.apiPayload);
+          setTimeout(() => {
+            that.isLoading = false;
+          }, 5000);
+        }
       }
     },
+    initDeny(type, msg) {
+      const mon = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      if (type === 'noPermission') {
+        this.$notify({
+          title: 'Notification',
+          message: msg,
+          position: 'top-left',
+          type: 'warning',
+        });
+      } else if (type === 'forbid') {
+        this.$notify({
+          title: 'Notification',
+          message: msg + mon[new Date().getMonth()],
+          position: 'top-left',
+          type: 'warning',
+        });
+      }
+    },
+    reload() {
+      if (this.initUndo === false) {
+        this.$http.post(this.apiPath2, this.apiPayload2);
+        setTimeout(() => {
+          location.reload();
+        }, 4000);
+      }
+    },
+    handleOpenPanel(msg) {
+      this.openflag = msg;
+    },
+    handleScroll() {
+      const sticky = document.getElementById('tablehead').offsetTop;
+      // console.log(window.pageYOffset);
+      if (window.pageYOffset <= 500) {
+        this.scrolled = false;
+        return;
+      }
+      if (window.pageYOffset >= sticky) {
+        this.scrolled = true;
+      } else {
+        this.scrolled = false;
+      }
+    },
+    handleClick(tab, event) {
+      // console.log(tab, event);
+    },
+    // callUndo(ev) {
+    //   if (ev.code !== "KeyZ" || ev.ctrlKey !== true) return;
+    //   else if (this.$history.length == 0) return;
+    //   {
+    //     var x = this.$history.pop();
+    //     var data = x.payload;
+    //     this.month.people[data.indexes.p].days[data.indexes.d].workDay =
+    //       data.workDay;
+    //     this.month.people[data.indexes.p].days[data.indexes.d].workType =
+    //       data.workType;
+    //     this.$http.post(x.path, x.payload);
+    //   }
+    // },
+    
     openShiftTable(){
       console.log('opening shift data');
       this.WFMData = this.month.people;
@@ -582,126 +733,94 @@ export default {
 
       // let shiftData = this.teamForm;
       // console.log(shiftData);
-    },
-    copyShiftInfo() {
-      console.log("copying shift data");
+  },
 
-      const table = document.getElementById('copy-table');
-      const range = document.createRange();
+  copyShiftInfo() {
+    console.log("copying shift data");
 
-      range.selectNode(table);  // define copy data is table
+    const table = document.getElementById('copy-table');
+    const range = document.createRange();
 
-      const selection = window.getSelection();
-      if (selection.rangeCount > 0) selection.removeAllRanges();
-      selection.addRange(range);
+    range.selectNode(table);  // define copy data is table
 
-      var successful = document.execCommand('copy');  // execute copy
-      var msg = successful ? 'successful' : 'unsuccessful';
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) selection.removeAllRanges();
+    selection.addRange(range);
 
-      if(msg === 'successful'){
-          this.copyShiftInfoData = 'Copied!!'
-      }else {
-          this.addFeedback('notify', 'Sorry, failed to copy, please try manually');
+    var successful = document.execCommand('copy');  // execute copy
+    var msg = successful ? 'successful' : 'unsuccessful';
+
+    if(msg === 'successful'){
+        this.copyShiftInfoData = 'Copied!!'
+    }else {
+        this.addFeedback('notify', 'Sorry, failed to copy, please try manually');
+    }
+
+    selection.removeAllRanges();  // remove selection
+  },
+  beforeTableViewClose() {
+      this.dialogTableVisible = false;
+      this.copyShiftInfoData = 'Copy Shift Data'
+  },
+  openOutlook() {
+      console.log("opening outlook");
+      window.location.href = "mailto:wfms@microsoft.com?subject=[REVIEW REQUIRED] WFM Update List";
+      this.dialogTableVisible = false;
+      this.copyShiftInfoData = 'Copy Shift Data'
+  },
+  sliceAlise(row, column) {
+    // console.log('slice alice');
+    return row.alias.slice(1, -1);
+  },
+  getCaeNumber() {
+    // console.log("get caseNumber from main page");
+    // console.log(this.TeamEmails);
+
+    axios({
+      method: 'post',
+      url: 'https://pta-eyes-on-api.azurewebsites.net/api/GetDailyVolumeByUpn?code=C5ugr1rsTkjAy6OrjfwPaPsDvuW0tnbee8c8tcJdxCmKkJSt0SRdIQ==',
+      data: {
+        "upn":this.TeamEmails
       }
+    })
+    .then((response)=>{
 
-      selection.removeAllRanges();  // remove selection
-    },
-    beforeTableViewClose() {
-        this.dialogTableVisible = false;
-        this.copyShiftInfoData = 'Copy Shift Data'
-    },
-    openOutlook() {
-        console.log("opening outlook");
-        window.location.href = "mailto:wfms@microsoft.com?subject=[REVIEW REQUIRED] WFM Update List";
-        this.dialogTableVisible = false;
-        this.copyShiftInfoData = 'Copy Shift Data'
-    },
-    sliceAlise(row, column) {
-      // console.log('slice alice');
-      return row.alias.slice(1, -1);
-    },
-    handleOpenPanel(msg) {
-      this.openflag = msg;
-    },
-    handleSelect(item) {
-      const path = item.link
-      this.$router.push({ path });
-      location.reload();
-    },
-    handleScroll() {
-      const header = document.getElementById('tablehead');
-      const sticky = header.offsetTop;
-      // console.log(window.pageYOffset);
-      if (window.pageYOffset <= 300) {
-        this.scrolled = false;
-        return;
+      // let jsondata = JSON.stringify(response.data);
+      let jsondata = response.data;
+      console.log(jsondata);
+
+      let arrayAlias = [];
+      
+      for(let i in jsondata){
+        arrayAlias.push({alias: i, casenumber: jsondata[i]});
       }
-      if (window.pageYOffset >= sticky) {
-        this.scrolled = true;
-      } else {
-        this.scrolled = false;
-      }
-    },
-    handleClick(tab, event) {
-      // console.log(tab, event);
-    },
-    handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    // callUndo(ev) {
-    //   if (ev.code !== "KeyZ" || ev.ctrlKey !== true) return;
-    //   else if (this.$history.length == 0) return;
-    //   {
-    //     var x = this.$history.pop();
-    //     var data = x.payload;
-    //     this.month.people[data.indexes.p].days[data.indexes.d].workDay =
-    //       data.workDay;
-    //     this.month.people[data.indexes.p].days[data.indexes.d].workType =
-    //       data.workType;
-    //     this.$http.post(x.path, x.payload);
-    //   }
-    // },
+      // console.log(arrayAlias);
+
+      this.$store.commit('getDailyCaseNumber', arrayAlias);
+    })
+    .catch((error)=>{
+      console.log(error);
+    });
+  },
   },
 };
 </script>
 
 <style>
-
+.el-loading-mask {
+    background-color:#262626 !important;
+}
 .noMonth {
   min-height: 600px;
 }
 .welcome {
   margin-top: 30px;
   text-align: center;
-  margin-left: -80px;
-}
-.el-button{
-  background-color:#373737;
-  border-color: gray;
-  color:azure;
 }
 .tablehead {
   width: 100%;
 }
-.customizedInitBtn {
-  margin: auto;
-  height: 35px;
-  width: 65px;
-  color:#000;
-  background-color: #fff;
-  border-radius: 5px;
-  border: 1px solid #808080;
-  outline: none;
-}
 
-button.customizedInitBtn:hover {
-  color:rgba(64, 158, 255, 20);
-  border: 1px solid rgba(64, 158, 255, 20);
-  outline: none;
-}
 .sticky {
   position: fixed;
   top: 0;
@@ -730,8 +849,9 @@ button.customizedInitBtn:hover {
 }
 
 .testClass {
-  margin-bottom: 55px;
-  text-align:right;
+  margin-right: 40px;
+    margin-bottom: 55px;
+    text-align:right;
 
 }
 .testClassII {
@@ -741,6 +861,7 @@ button.customizedInitBtn:hover {
   margin-left: 30px
 }
 .button {
+  
   border: none;
   margin: 10px;
   color: rgb(255, 255, 255);
@@ -772,8 +893,7 @@ button.customizedInitBtn:hover {
   visibility: hidden;
 }
 .mainPanel {
-  margin-top: 50px;
-  min-height: 700px;
+  min-height: 1000px;
   min-width: fit-content;
 }
 .el-input-group--append .el-input__inner, .el-input-group__prepend {
@@ -789,34 +909,12 @@ button.customizedInitBtn:hover {
     background-color: #262626;
     border: 1px solid #808080;
 }
-.el-menu-vertical-demo {
-  margin-top: 40px;
-  background-color: #252524;
-  float: right;
-}
-.el-menu {
-  background-color: #252524;
-  cursor: pointer;
-  border: none !important;
-}
-
-.el-menu.el-menu--horizontal {
-    border-right: solid 1px #252524 !important;
-    border-bottom:none !important;
-}
-
-.outlookLogo2 {
-  width: 70px;
-  height: 40px;
-  justify-content: center;
-  margin-left: 100px;
-}
-.el-loading-mask {
-    background-color:#262626
-}
 .WFbutton{
   vertical-align: middle;
   padding: 7px 15px;
+}
+.dateTop{
+  padding-left: 25px;
 }
 .item {
   margin: 4px;
@@ -831,20 +929,28 @@ button.customizedInitBtn:hover {
   min-width: 10px;
   word-wrap: break-word;
 }
-.el-main {
-  padding-left: 0px;
+.comment{
+  display:inline; 
+  font-size: 9.5px;
 }
-.helpBtn.el-button:hover{
-  color:#252525;
-  background-color: azure;
+.cmtCell {
+  font-size: 10px;
+  padding: 4px;
 }
-.helpBtn.el-button {
-  position: fixed;
-  left:10px;
-  bottom:20px;
-  border: none;
-  font-size: larger; 
-  background-color: #252525;
-  color:rgb(144, 147, 153);
+.cmt-roll {
+  margin-left: 0px !important;
+}
+.sketch-up {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.sketch-up-content {
+  margin-bottom: 5px;
+}
+.percentageStageWarn {
+  color: red !important;
+}
+.percentageStageNotify {
+  color: orange !important;
 }
 </style>

@@ -6,98 +6,120 @@
         @click="open=false"
         class="moveable"
         v-bind="moveable"
+        :showClose="true"
         @drag="handleDrag"
         @resize="handleResize"
         @scale="handleScale"
         @rotate="handleRotate"
         @warp="handleWarp">
-          <div class="help-dialogII">
-                <div class="dayTypes">
+          <div @mousedown="grabSign=true" @mouseup="grabSign=false" v-bind:class="{'grab':!grabSign, 'grabbing':grabSign, 'panelFrame':true}">
+              <div>
                     <div class="typeTitle">
-                    <h5 class = "blackFont">Work Day Type</h5>
-                    </div>
-                    <div class="box-container">
-                        <div v-on:click="cycle($event,0)" class="box0 green"></div>
-                        <div v-on:click="cycle($event,8)" class="box0 green">MS</div>
-                        <div v-on:click="cycle($event,9)" class="box0 green1">NS</div>
-                        <!-- <h5 class = "blackFont">Work Day</h5> -->
-                    </div>
-                    <div class="typeTitle">
-                    <h5 class = "blackFont">Leave Type (Sick Leave / Annual Leave)</h5>
-                    </div>
-                    <div class="box-container">
-                    <el-popover
-                      placement="bottom"
-                      width="200"
-                      trigger="click">
-                      <p>Please inform the team about your absence.</p>
-                      <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
-                      <div slot="reference" v-on:click="cycle($event,2)" class="box0 purple">SL</div>
-                    </el-popover>
-                    <el-popover
-                      placement="bottom"
-                      width="200"
-                      trigger="click">
-                      <p>Please inform the team about your absence.</p>
-                      <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
-                      <div slot="reference" v-on:click="cycle($event,3)" class="box0 purple">AL</div>
-                    </el-popover>
+                      <h5 class = "panelFont">Work Day Type</h5>
+                      </div>
+                      <div class="box-container">
+                          <div v-on:click="cycle($event,0)" class="box0" v-bind:style="{'background-color':getBackground(1)}">{{displayValue(0)}}</div>
+                          <div v-on:click="cycle($event,8)" class="box0" v-bind:style="{'background-color':getBackground(1)}">{{displayValue(8)}}</div>
+                          <div v-on:click="cycle($event,9)" class="box0" v-bind:style="{'background-color':getBackground(2)}">{{displayValue(9)}}</div>
+                          <!-- <h5 class = "panelFont">Work Day</h5> -->
                     </div>
                     <div class="typeTitle">
-                    <h5 class = "blackFont">Half-day Leave Type </h5>
-                    <h5 class = "blackFont">(SL/AL + Morning / Afternoon)</h5>
+                      <h5 class = "panelFont">Leave Type (Sick Leave / Annual Leave)</h5>
                     </div>
                     <div class="box-container">
-                    <el-switch v-model="alORsl" active-text="AL" inactive-text="SL"> </el-switch>
-                    <el-popover
-                      placement="bottom"
-                      width="200"
-                      trigger="click">
-                      <p>Please inform the team about your absence.</p>
-                      <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
-                      <div slot="reference" v-on:click="cycle($event,12)" class="box1" :class="alORsl?'purple2':'purple1'">H(M)</div>
-                    </el-popover>
-                    <el-popover
-                      placement="bottom"
-                      width="200"
-                      trigger="click">
-                      <p>Please inform the team about your absence.</p>
-                      <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
-                      <div slot="reference" v-on:click="cycle($event,14)" class="box1" :class="alORsl?'purple2':'purple1'">H(A)</div>
-                    </el-popover>
+                      <el-popover
+                        placement="bottom"
+                        width="200"
+                        trigger="click">
+                        <p>Please inform the team about your absence.</p>
+                        <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+                        <div slot="reference" v-on:click="cycle($event,2)" class="box0" v-bind:style="{'background-color':getBackground(4)}">{{displayValue(2)}}</div>
+                      </el-popover>
+                      <el-popover
+                        placement="bottom"
+                        width="200"
+                        trigger="click">
+                        <p>Please inform the team about your absence.</p>
+                        <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+                        <div slot="reference" v-on:click="cycle($event,3)" class="box0" v-bind:style="{'background-color':getBackground(4)}">{{displayValue(3)}}</div>
+                      </el-popover>
                     </div>
                     <div class="typeTitle">
-                    <h5 class = "blackFont">Public Holiday On-duty type </h5>
-                    <h5 class = "blackFont">(OnDuty / MorningShift)</h5>
+                      <h5 class = "panelFont">Half-day Leave Type </h5>
+                      <h5 class = "panelFont">(SL/AL + Morning / Afternoon)</h5>
                     </div>
                     <div class="box-container">
-                        <div v-on:click="cycle($event,10)" class="box0 orange">PO</div>
-                        <div v-on:click="cycle($event,11)" class="box0 orange">PM</div>
-                        <!-- <h5 class = "blackFont">OnDuty / MorningShift(PH)</h5> -->
+                      <el-switch v-model="alORsl" active-text="AL" inactive-text="SL"> </el-switch>
+                      <el-popover
+                        placement="bottom"
+                        width="200"
+                        trigger="click">
+                        <p>Please inform the team about your absence.</p>
+                        <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+                        <div slot="reference" v-on:click="cycle($event,12)" class="box0" :class="alORsl?'purple2':'purple1'">{{displayValue(4)}}</div>
+                      </el-popover>
+                      <el-popover
+                        placement="bottom"
+                        width="200"
+                        trigger="click">
+                        <p>Please inform the team about your absence.</p>
+                        <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+                        <div slot="reference" v-on:click="cycle($event,14)" class="box0" :class="alORsl?'purple2':'purple1'">{{displayValue(5)}}</div>
+                      </el-popover>
+                    </div>
+                    <div style="float: right">
+                      <div class="typeTitle">
+                        <h5 class = "panelFont">Custom DayType </h5>
+                      </div>
+                      <div class="box-container"  style="margin-top: 45px;">
+                          <div v-on:click="cycle($event,-1)" class="box0" v-bind:style="{'background-color':getBackground(-1)}">{{displayValue(-1)}}</div>
+                          <div v-on:click="cycle($event,-2)" class="box0" v-bind:style="{'background-color':getBackground(-2)}">{{displayValue(-2)}}</div>
+                      </div>
                     </div>
                     <div class="typeTitle">
-                    <h5 class = "blackFont">Other Type</h5>
+                      <h5 class = "panelFont">Public Holiday On-duty type </h5>
+                      <h5 class = "panelFont">(OnDuty / MorningShift)</h5>
                     </div>
                     <div class="box-container">
-                    <el-popover
-                      placement="bottom"
-                      width="200"
-                      trigger="click">
-                      <p>Please inform the team about your absence.</p>
-                      <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
-                      <div slot="reference" v-on:click="cycle($event,7)" class="box2 blue">T</div>
-                    </el-popover>
-                    <h5 class = "blackFont">Training</h5>
-                    <div v-on:click="cycle($event,1)" class="box0 red">PH</div><h5 class = "blackFont">Public Holiday</h5>
+                        <div v-on:click="cycle($event,10)" class="box0" v-bind:style="{'background-color':getBackground(7)}">{{displayValue(10)}}</div>
+                        <div v-on:click="cycle($event,11)" class="box0" v-bind:style="{'background-color':getBackground(7)}">{{displayValue(11)}}</div>
+                    </div>
+                    <div class="typeTitle">
+                      <h5 class = "panelFont">Other Type</h5>
+                    </div>
+                    <div class="box-container">
+                      <el-popover
+                        placement="bottom"
+                        width="200"
+                        trigger="click">
+                        <p>Please inform the team about your absence.</p>
+                        <a href="mailto:wfms@microsoft.com"><img class = "outlookLogo" src="../../static/img/outlook.png"  alt="Outlook" /></a>
+                        <div slot="reference" v-on:click="cycle($event,7)" class="box1" v-bind:style="{'background-color':getBackground(3)}">{{displayValue(7)}}</div>
+                      </el-popover>
+                      <h5 class = "panelFont">Training</h5>
+                      <div v-on:click="cycle($event,1)" class="box0 " v-bind:style="{'background-color':getBackground(0)}">{{displayValue(1)}}</div>
+                      <h5 class = "panelFont">Public Holiday</h5>
                     </div>
                     <span slot="footer" class="dialog-footer">
-                        <!-- <el-button @click="handleOpen">Cancel</el-button> -->
                         <el-button class="confirmBtn" type="primary" @click="handleOpen()">Confirm</el-button>
                     </span>
-                </div>
-            </div> 
+              </div>
+              <div class="closeButton"> 
+                <el-button round size="mini" type="info" @click="handleOpen()">X</el-button>
+              </div>
+          </div> 
       </Moveable>
-      <day class = "dayCell" @customEvent="handleEvent" v-for="(d,index) in person.days" :large="large" :key="d._id" :day="d" :pindex="pindex" :dindex="index" :testparam="dayType" :testparamII="date"/>
+      <day class = "dayCell" 
+        @customEvent="handleEvent" 
+        v-for="(d,index) in person.days" 
+        :large="large" :key="d._id" :day="d" 
+        :pindex="pindex" :dindex="index" 
+        :testparam="dayType" :testparamII="date" 
+        :custom="custom"
+        :customParam="customParam" 
+        
+        :alias = "person.alias"
+        :openSign="open" />
   </div>
 </template>
 
@@ -107,16 +129,31 @@ import Moveable from 'vue-moveable';
 var store = require('store')
 export default {
   components: { Day, Moveable },
-  props: ["person", "pindex","userName","openflag"],
+  props: ["custom","person", "pindex","userName","openflag"],
 
   data() {
       return {
         alias: '', // permission control
-
-        workTypes: ["W", "PH", "SL", "AL", "H(M)", "H(A)", "V", "T", "MS", "NS", "PO", "PM","HMSL","HMAL","HASL","HAAL"],
+        grabSign: false,
+        workTypes: [
+         "W", "PH", "SL", "AL", // 0, 1, 2, 3
+         "H(M)", "H(A)", "V", "T", // 4, 5, 6, 7
+         "MS", "NS", "PO", "PM", // 8, 9, 10, 11
+         "HMSL","HMAL","HASL","HAAL"], // 12, 13, 14, 15
         dayType: "W", // default value for data update
         date: null, // default value for data update
-
+        backgroundColor: [
+          "#8c2230", // 0 red
+          "#557037", // 1 green
+          "#3B4D50", // 2 green1
+          "#375c8c", // 3 blue
+          "#403259", // 4 purple
+          "#360036", // 5 purple1
+          "#63474D", // 6 purple2
+          "#b36b00", // 7 orange
+          "#555555", // 8 grey
+         ],
+        customParam: 0,
         /* window view params */
         usrrecord: false, // highlight the record of the current usr
         moveable: {       // operation panel
@@ -128,7 +165,7 @@ export default {
           throttleDrag: 0,          
           throttleResize: 1,
           throttleScale: 0,
-          throttleRotate: 0
+          throttleRotate: 0,
         },
         open: false, // operation panel params
         alORsl: false, // AL or SL default false means sick leave
@@ -153,6 +190,7 @@ export default {
       else return false;
     },
   },
+
   created() {
     window.addEventListener('resize',()=>{
         this.getWindowWidth()
@@ -162,35 +200,28 @@ export default {
     this.alias = store.get('user').alias
     if(this.alias === this.person.alias) {this.usrrecord = true}
   },
+
   methods: {
-    /* moveable method */
-    handleDrag({ target, left, top }) {
-      // console.log('onDrag left, top', left, top);
-      target.style.left = `${left}px`;
-      target.style.top = `${top}px`;
+    displayValue(num) {
+      if(num<0) return this.custom.Type[-num - 1]
+      if(this.workTypes[num] === 'W') return ' ';
+      else return this.workTypes[num];
     },
-    handleResize({
-      target, width, height, delta,
-    }) {
-      // console.log('onResize', width, height);
-      delta[0] && (target.style.width = `${width}px`);
-      delta[1] && (target.style.height = `${height}px`);
+    getBackground(num) {
+      if(num<0) return this.custom.color[-num - 1]
+      return this.backgroundColor[num]
     },
-    handleScale({ target, transform, scale }) {
-      // console.log('onScale scale', scale);
-      target.style.transform = transform;
+    customDayType(num) {
+      if(num == 0) return 'C1'
+      else return 'C2'
     },
-    handleRotate({ target, dist, transform }) {
-      // console.log('onRotate', dist);
-      target.style.transform = transform;
+    customDayColor(num) {
+      if(num == 0) return '#000'
+      else return '#fff'
     },
-    handleWarp({ target, transform }) {
-      // console.log('onWarp', target);
-      target.style.transform = transform;
-    },
-   
+
     /* data update */
-    handleEvent:function(msg) {
+    handleEvent: function(msg) {
       if( this.alias === this.person.alias || this.admin === true ) {
         if(this.openflag == false || this.open == true) {
           if(this.open === false){ this.dayType = msg.split("@")[1] }
@@ -206,9 +237,32 @@ export default {
       // location.reload();
     },
     cycle(e, arg) {
-      // if(arg === -1) return;
+      if(arg<0) {
+        this.dayType = this.custom.Type[-arg-1];
+        this.customParam = arg;
+        return;
+      }
       if(this.alORsl && (arg == 12 || arg == 14)) arg = arg + 1;
-      this.dayType = this.workTypes[arg];      
+      this.dayType = this.workTypes[arg];
+    },
+
+    /* moveable method */
+    handleDrag({ target, left, top }) {
+      target.style.left = `${left}px`;
+      target.style.top = `${top}px`;
+    },
+    handleResize({ target, width, height, delta}) {
+      delta[0] && (target.style.width = `${width}px`);
+      delta[1] && (target.style.height = `${height}px`);
+    },
+    handleScale({ target, transform, scale }) {
+      target.style.transform = transform;
+    },
+    handleRotate({ target, dist, transform }) {
+      target.style.transform = transform;
+    },
+    handleWarp({ target, transform }) {
+      target.style.transform = transform;
     },
 
     /* Window View */
@@ -235,8 +289,7 @@ day {
   justify-content: center;
 }
 .pickRow {
-  border: 2px solid #409effa1;
-  border-radius: 2px;
+  border: 2px solid #409eff;
 }
 .row:hover:not(:first-child) {
     background: #444;
@@ -244,6 +297,20 @@ day {
 .row:hover>.cellxII {
     color: white !important;
     font-weight: 500;
+}
+.large {
+  flex-direction: column;
+  width: 90px;
+  font-weight: 700;
+}
+.cellxII {
+  color: #eaeaea;
+  border-radius: 2px;
+  margin: 4px;
+  user-select: none;
+  border: 0px solid;
+  font-size: 16px;
+  font-family: "Roboto", "Corbel", "Avenir", "Lucida Grande", "Lucida Sans", "sans-serif";
 }
 .cellx {
   display: flex;
@@ -253,24 +320,9 @@ day {
   vertical-align: middle;
   width: 40px;
 }
-.name {
-  width: 180px;
-  font-size: 18px;
-  text-align: left;
-  font-family: "Roboto", Corbel, Avenir, "Lucida Grande", "Lucida Sans", sans-serif;
-}
 .workday {
-  /* color: #C2C4CE; */
+  color: #C2C4CE;
   /* cursor: pointer; */
-}
-.cellxII {
-  color: #eaeaea;
-  border-radius: 2px;
-  margin: 4px;
-  user-select: none;
-  border: 0px solid;
-  font-size: 16px;
-  font-family: "Roboto", Corbel, Avenir, "Lucida Grande", "Lucida Sans", sans-serif;
 }
 .workday:hover {
   font-size: 21px;
@@ -278,6 +330,13 @@ day {
   padding: 1px;
   border: 3px solid;
 }
+.name {
+  width: 180px;
+  font-size: 18px;
+  text-align: left;
+  font-family: "Roboto", "Corbel", "Avenir", "Lucida Grande", "Lucida Sans", "sans-serif";
+}
+
 @media only screen and (max-width: 1600px) {
   .cellx {
     margin: 3px;
@@ -294,30 +353,52 @@ day {
     font-family: "Roboto", Corbel, Avenir, "Lucida Grande", "Lucida Sans", sans-serif;
   }
 }
-.dayTypes {
-  width: 267px;
+.purple2 {
+  background-color: #63474D;
 }
-.box-container {
-  display: flex;
+.purple1 {
+  background-color: #360036;
 }
-.box-container .el-button {
-  background: inherit;
-  padding: inherit;
-  color:inherit;
-  margin: inherit;
+
+.confirmBtn{
+  margin-top:15px;
 }
-.box1 {
-  border: 1px solid #404040;
-  cursor: pointer;
-  margin: 5px;
-  width: 40px;
-  height: 25px;
+.typeTitle {
+  text-align: left;
+}
+.el-switch {
+  margin:15px;
+}
+.moveable {
+  position: relative;
+  text-align: center;
+  font-size: 10px;
+  margin: 0 auto;
+  font-weight: 100;
+  letter-spacing: 1px;
+}
+.outlookLogo {
+  width: 70px;
+  height: 40px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+}
+.panelFont {
   color: white;
-  border-radius: 3px;
+}
+.panelFrame {
+  border: 5px solid #404040;
+  background-color: #3D5B5E;
+  position: absolute;
+  border-radius: 20px;
+  top: 25%;
+  left: 50%;
+  margin-left: -150px;
+  width: 280px;
+  padding: 30px;
+  color: black;
   display: flex;
-  flex-direction: column;
-  padding-left: 3px;
-  padding-top: 10px;
+  justify-content: left;
 }
 .box0 {
   border: 1px solid #404040;
@@ -332,7 +413,7 @@ day {
   padding-left: 3px;
   padding-top: 10px;
 }
-.box2 {
+.box1 {
   border: 1px solid #404040;
   cursor: pointer;
   margin: 5px;
@@ -345,117 +426,18 @@ day {
   padding-left: 1px;
   padding-top: 10px;
 }
-.large {
-  flex-direction: column;
-  width: 90px;
-  font-weight: 700;
-}
-.help-dialogII {
-  border: 5px solid #404040;
-  background-color: #616a6d;
-  position: absolute;
-  border-radius: 20px;
-  top: 25%;
-  left: 50%;
-  margin-left: -150px;
-  width: 280px;
-  padding: 30px;
-  color: black;
+.box-container {
   display: flex;
-  justify-content: left;
 }
-.blackFont {
+.box-container .el-button {
+  background: inherit;
+  padding: inherit;
+  color:inherit;
+}
+.closeButton {
+  text-align: right;
   color: white;
 }
-.fab {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  border-radius: 30px;
-  border: none;
-  background-color: #600;
-  color: white;
-  font-weight: 700;
-  font-size: 30px;
-  /* cursor: pointer; */
-  transition: all 0.1s ease-in-out;
-}
-.fab:hover {
-  box-shadow: 0 6px 14px 0 #000;
-  transform: scale(1.05);
-}
-.colorCell {
-  background-color: #0A122A;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  vertical-align: middle;
-  width: 40px;
-  color: white;
-}
-.colorFont {
-  color: cornflowerblue;
-}
-
-.outlookLogo {
-  width: 70px;
-  height: 40px;
-  margin-left: 5px;
-  margin-bottom: 5px;
-}
-.moveable {
-  position: relative;
-  text-align: center;
-  font-size: 10px;
-  margin: 0 auto;
-  font-weight: 100;
-  letter-spacing: 1px;
-}
-
-.el-switch {
-  margin:15px;
-}
-
-.grey {
-  background-color: #555555;
-}
-.red {
-  background-color: #8c2230;
-}
-
-.green {
-  background-color: #557037;
-}
-
-.green1 {
-  background-color: #3B4D50;
-}
-
-.blue {
-  background-color: #375c8c;
-}
-
-.purple {
-  background-color: #403259;
-}
-.purple1 {
-  background-color: #360036;
-}
-.purple2 {
-  background-color: #63474D;
-}
-
-
-.orange {
-  background-color: #b36b00;
-}
-.typeTitle {
-  text-align: left;
-}
-.confirmBtn{
-  margin-top:15px;
-}
+.grab {cursor: grab;}
+.grabbing {cursor: grabbing;}
 </style>

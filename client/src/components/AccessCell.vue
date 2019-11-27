@@ -14,7 +14,7 @@
             <h2 v-if="podSelect" class="pickTeam InputButton2" >OR</h2>
             <h2 v-if="podSelect" class="goto" >Go to</h2>
             <el-button v-if="podSelect" class="pickTeam InputButton3" type="primary" @click="goPortal()">Portal</el-button>
-            <el-button v-if="!podSelect && manualLoginBtn" class="InputButton3" type="primary" @click="manualLogin = true">Login</el-button>
+            <el-button v-if="!podSelect && manualLoginBtn" class="InputButton3" type="primary" @click="manualLoginMtd()" >Login</el-button>
         </el-container>
         <el-dialog title="Manual Login" :visible.sync="manualLogin">
             <el-form>
@@ -23,7 +23,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="getTeamName();manualLogin = false">Sign In</el-button>
+                <el-button type="primary" @click="getTeamName();manualLogin = false" disabled>Sign In</el-button>
             </div>
         </el-dialog> 
         <div class="PersonalInfo" v-loading="loading" v-if="loading"> 
@@ -114,7 +114,7 @@ export default {
                 })
                 .catch((error) => {
                     console.log(error)
-                    this.addFeedback('error', 'System Error. Please turn to the developer.');
+                    // this.addFeedback('error', 'System Error. Please turn to the developer.');
                     return [];
                 })
             })
@@ -163,7 +163,7 @@ export default {
                         that.callMSGraph(that.graphConfig.graphMeEndpoint, tokenResponse.accessToken, that.graphAPICallback);
                     }).catch(function (error) {
                         console.log(error);
-                        that.addFeedback('error', 'System Error. Please turn to the developer.');
+                        // that.addFeedback('error', 'System Error. Please turn to the developer.');
                     });
                 }
             });
@@ -178,7 +178,7 @@ export default {
                 if (response.tokenType === "access_token") {
                     callMSGraph(this.graphConfig.graphMeEndpoint, response.accessToken, this.graphAPICallback);
                 } else {
-                    // console.log("token type is:" + response.tokenType);
+                    console.log("token type is:" + response.tokenType);
                 }
             }
         },
@@ -197,7 +197,7 @@ export default {
 
         // process AAD result
         graphAPICallback(data) {
-            // console.log("graphAPICallback");
+            console.log("graphAPICallback");
             let result = JSON.stringify(data, null, 4);
             let jsonresult = JSON.parse(result);
             this.title = jsonresult.jobTitle
@@ -210,12 +210,11 @@ export default {
             {
                 this.su = true
             } 
-            // console.log("jsonresult.jobTitle"+ jsonresult.jobTitle);
+            console.log("jsonresult.jobTitle"+ jsonresult.jobTitle);
 
             if(jsonresult.jobTitle == null) {
                 // console.log("null jobTitle" + jsonresult);
                 jsonresult.jobTitle = 'SUPPORT ENG'
-                this.getTeamName();
             } else if( jsonresult.jobTitle.includes('TECHNICAL ADVISOR')
                 || jsonresult.jobTitle.includes('TECH ADVISOR')
                 || jsonresult.jobTitle.includes('MGR')
@@ -226,10 +225,9 @@ export default {
                 )
             {
                 this.admin = true;
-                // console.log('admin');
-                this.getTeamName();
+                console.log('admin');
             }
-            // this.getTeamName();
+            this.getTeamName();
         },
 
         requiresInteraction(errorCode) {
@@ -256,11 +254,11 @@ export default {
             }
             var that = this
             var apipath = '/api/getpod/' + new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + this.alias
-            // console.log(apipath)
+            console.log(apipath)
             return new Promise((resolve, reject) => {
                 this.$http.get(apipath)
                 .then((response)=> {
-                    // sconsole.log(response.data)
+                    console.log(response.data)
                     if(!(this.podSelect) && this.manualLoginBtn) {
                         this.displayName = response.data.name
                         if(response.data.principal == 'TM' || response.data.principal == 'TA') this.admin = true 
@@ -283,11 +281,20 @@ export default {
                 })
                 .catch((error) => {
                     console.log(error);
-                    this.addFeedback('error', 'System Error. Please turn to the developer.');
+                    // this.addFeedback('error', 'System Error. Please turn to the developer.');
                 })
             }) 
         },
-        
+        manualLoginMtd() {
+            var that = this
+            var myMSALObj = new Msal.UserAgentApplication(this.msalConfig);
+            myMSALObj.acquireTokenPopup(this.requestObj).then(function (tokenResponse) {
+                that.callMSGraph(that.graphConfig.graphMeEndpoint, tokenResponse.accessToken, that.graphAPICallback);
+            }).catch(function (error) {
+                console.log(error);
+                // that.addFeedback('error', 'System Error. Please turn to the developer.');
+            });
+        },
         goPortal() {
             const path = '/portal'
             this.$router.push({ path });

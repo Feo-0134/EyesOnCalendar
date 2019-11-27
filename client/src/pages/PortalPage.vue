@@ -1,24 +1,31 @@
 <template> 
     <el-container v-show="admin">
+        <div class="navigationBar">
+            <el-button type="primary" v-show="true" @click="goCalendar()">Calendar</el-button>
+        </div>
+    <el-header class="navigationBar">EyesonCalendar Administration</el-header>
+    <el-container>
         <el-aside width="300px">
-            <el-menu :default-openeds="['1']">
-                <el-submenu index="1">
-                    <template slot="title"><i class="el-icon-menu"></i>EyesonCalendar</template>
-                    <el-menu-item-group>
-                        <template slot="title"></template>
-                        <el-menu-item index="1-1" v-on:click="topicView(0)">Initiate Team Calendar</el-menu-item>
-                        <el-menu-item index="1-2" v-on:click="topicView(1)">Team Calendar Management</el-menu-item>
-                        <el-menu-item index="1-3" v-on:click="topicView(2)">Team Shift Management</el-menu-item>
-                        <el-menu-item index="1-4" v-on:click="topicView(3)">Team Shift Report</el-menu-item>
-                        <el-menu-item index="1-5" v-on:click="topicView(4)">Contact</el-menu-item>
-                    </el-menu-item-group>
-                </el-submenu>
+            <el-menu default-active="1" >
+                <template slot="title"><i class="el-icon-menu"></i>EyesonCalendar</template>
+                <el-menu-item index="0" v-on:click="topicView(0)" >
+                    <template slot="title">Initiate Team Calendar</template>
+                </el-menu-item>
+                <el-menu-item index="1" v-on:click="topicView(1)" >
+                    <template slot="title" >Team Calendar Management</template>
+                </el-menu-item>
+                <el-menu-item index="2" v-on:click="topicView(2)" >
+                    <template slot="title" >Team Shift Management</template>
+                </el-menu-item>
+                <el-menu-item index="3" v-on:click="topicView(3)" >                       
+                    <template slot="title" >Team Shift Report</template>
+                </el-menu-item>
+                <el-menu-item index="4" v-on:click="topicView(4)" >  
+                    <template slot="title" >Contact</template>
+                </el-menu-item>
             </el-menu>
         </el-aside>
-        <el-main>        
-            <div class="navigationBarII">
-                <el-button  v-show="true" @click="goCalendar()">Calendar</el-button>
-            </div>
+        <el-main>
             <el-dialog title="Shift Arrangement" :visible.sync="sftFormVisible">
                 <el-form :model="sftForm">
                     <el-form-item label="Alias" :label-width="formLabelWidth">
@@ -133,10 +140,10 @@
                     <el-input v-model="initForm.TeamAdvisor" placeholder="example: danzha;anikshen;"></el-input> 
                 </el-form-item> -->
                 <el-form-item label="FTE">
-                    <el-input v-model="initForm.FTE" placeholder="eg. User Zero(ftealias00);User One(ftealias01);"></el-input>
+                    <el-input v-model="initForm.FTE" placeholder="eg. Roronoa Zoro(zor);Vinsmoke Sanji(sav);"></el-input>
                 </el-form-item>
                 <el-form-item label="Vendor">
-                    <el-input v-model="initForm.Vendor" placeholder="eg. Vendor User2(v-vendoralias);"></el-input>
+                    <el-input v-model="initForm.Vendor" placeholder="eg. Skeleton Brook(v-brs);"></el-input>
                 </el-form-item>
                 <span>
                     <el-button @click="cleanInitForm">Cancel</el-button>
@@ -189,9 +196,23 @@
                     <el-button type="primary" icon="el-icon-minus" circle v-on:click="delPersonView('None',2)"></el-button>
                     </div>
                 </el-form-item>
-                <el-form-item label="Custom DayType">
-                    <el-input v-model="teamForm.customDayType" ></el-input>
-                    <el-button type="primary" v-on:click="setCustomDayType()">Update</el-button>
+                <el-form-item label="">
+                    <p style="width:10% !important;margin-left:-25px;">Shortening</p><p style="width:10% !important;margin-left:-5px; ">Color</p>
+                </el-form-item>
+                <el-form-item label="Custom DayType I">
+                    <el-input style="width:10% !important;"  :placeholder="teamForm.customDayType.customDayType.Type[0]"
+                    v-model="teamForm.updateCustomDayType.customDayType.Type[0]"></el-input>
+                    <el-input style="width:20% !important;"  :placeholder="teamForm.customDayType.customDayType.color[0]"
+                    v-model="teamForm.updateCustomDayType.customDayType.color[0]"></el-input>
+                </el-form-item>
+                <el-form-item label="Custom DayType II">
+                    <el-input style="width:10% !important;"  :placeholder="teamForm.customDayType.customDayType.Type[1]"
+                    v-model="teamForm.updateCustomDayType.customDayType.Type[1]"></el-input>
+                    <el-input style="width:20% !important;"  :placeholder="teamForm.customDayType.customDayType.color[1]"
+                    v-model="teamForm.updateCustomDayType.customDayType.color[1]"></el-input>
+                </el-form-item>
+                <el-form-item label="">
+                    <el-button type="primary" v-on:click="setCustomDayType()">Update Custom DayType</el-button>
                 </el-form-item>
             </el-form>
             <el-form v-if="topic === 2"  :model="teamForm" label-width="140px">
@@ -307,10 +328,12 @@
         </el-main>
     </el-container>
           <!-- <help-screen /> -->
+    </el-container>
 </template>
 
 <script>
 var store = require('store') // global store
+import _ from 'lodash'
 import Personsum from "@/components/PersonRowSum" // report
 export default {
     components: { Personsum },
@@ -369,6 +392,18 @@ export default {
                 Vendor:'',
                 MorningShift: '',
                 NightShift: '',
+                customDayType:{
+                    customDayType: {
+                        Type: ["WS", "WD"],
+                        color: ["#73937E", "#E09891"]
+                    }
+                },
+                updateCustomDayType:{
+                    customDayType: {
+                        Type: ['', ''],
+                        color: ['', '']
+                    }
+                },
             },
             people: 
                 [{
@@ -431,7 +466,7 @@ export default {
                     let res = await this.$http.get(`/api/${globalform.TeamName}/${globalform.Month}`);
                     this.socket = io({
                         query: {
-                            path: this.teamForm.Month,
+                        path: this.teamForm.Month,
                         },
                     });
                     this.socket.on("update", data => {
@@ -442,6 +477,7 @@ export default {
                         data.workType;
                     });
                     if(res.data) {
+                        this.teamForm.customDayType.customDayType = res.data.customDayType
                         res.data.people = res.data.people.sort((x, y) => x.name.localeCompare(y.name));
                         res.data.people.forEach(person=> {
                             if(person.principle == 'TM') { globalform.TeamManager += person.name + person.alias + ';'}
@@ -458,6 +494,7 @@ export default {
                             if(cntM > cntW && cntM > cntN) {globalform.MorningShift += person.name + ';'}
                             if(cntN > cntW && cntN > cntM) {globalform.NightShift += person.name + ';'}
                         })
+
                         return res.data;
                     }
                 } catch (error) {
@@ -468,8 +505,10 @@ export default {
                         this.addFeedback('notify', 'Sorry, we didn\'t find your team data of this month. Please initiate your team & calendar first.')
                     }else if(((error.toString()).split(':')[1]).match('sort') == 'sort' ) {
                         //
+                    }else if(((error.toString()).split(':')[1]).match('500') == '500') {
+                        //
                     }
-                    else {this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease turn to the developer.');}
+                    else {this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease contact eyesoncalendar team.');}
                     this.socket = null;
                     return null;
                 }
@@ -480,6 +519,37 @@ export default {
         },
     },
     methods: {
+        formatUsrName(str) {
+            var arr = str.split(" ")
+            var ans = ''
+            var elem;
+            for (elem in arr) { arr[elem] = arr[elem][0].toUpperCase() + arr[elem].slice(1);ans += arr[elem] + ' '}
+            ans.trim()
+            return ans.trim()
+        },
+        setCustomDayType() {
+
+            var updateCustomDayType = this.teamForm.updateCustomDayType
+            updateCustomDayType.customDayType.Type[0] = 
+            this.teamForm.updateCustomDayType.customDayType.Type[0] ||
+             this.teamForm.customDayType.customDayType.Type[0]
+            updateCustomDayType.customDayType.Type[1] = 
+            this.teamForm.updateCustomDayType.customDayType.Type[1] ||
+             this.teamForm.customDayType.customDayType.Type[1]
+            updateCustomDayType.customDayType.color[0] = 
+            this.teamForm.updateCustomDayType.customDayType.color[0] ||
+             this.teamForm.customDayType.customDayType.color[0]
+            updateCustomDayType.customDayType.color[1] = 
+            this.teamForm.updateCustomDayType.customDayType.color[1] ||
+             this.teamForm.customDayType.customDayType.color[1]
+
+            new Promise((resolve, reject)=>{
+                this.$http.post("api/" + this.teamForm.TeamName +
+                 "/setCustomDayType/"+this.teamForm.Month,
+                 this.teamForm.updateCustomDayType)
+            })
+        },
+
         goCalendar() {
             let path = ''
             if(this.topic === 0 && this.initForm.TeamName !== '') {
@@ -496,6 +566,7 @@ export default {
         topicView(type) {
             this.topic = type
         },
+
         cleanInitForm: function () {
             this.initForm.FTE = ""
             this.initForm.Vendor = ""
@@ -551,6 +622,10 @@ export default {
         },
         
         initFormatCheck: function () {
+            // var MontArr = (this.initForm.Month).split("/");
+            // if(MontArr.length != 2 || MontArr[1] < 1 || MontArr[1] > 12) {
+            //     return -1;
+            // }
             var str = this.initForm.TeamName
             var ilen
             for(ilen=0;ilen<str.length;ilen++)
@@ -590,10 +665,11 @@ export default {
             for(var cnt = 0; cnt<vendorArr.length-1; cnt++) {
                 var tempArr = peopleArr[cnt].split("(")[0].split(" ")
                 if(tempArr.length <= 1) {this.addFeedback('notify', 'Employee Name invalid: '+ peopleArr[cnt].split("(")[0]); return;}
-                this.people[cnt].name = peopleArr[cnt].split("(")[0]
-                this.people[cnt].alias = '(' + peopleArr[cnt].split("(")[1]
+                console.log('test')
+                this.people[cnt].name = this.formatUsrName((peopleArr[cnt].split("(")[0]).trim())
+                this.people[cnt].alias = ('(' + peopleArr[cnt].split("(")[1]).trim()
                 if(this.people[cnt].alias.match('v-') != 'v-') 
-                { this.addFeedback('notify', 'vendor alias with no \'v-\' is invalid:' + '(' + peopleArr[cnt].split("(")[1]); return }
+                { this.addFeedback('notify', 'vendor alias with no \'v-\' is invalid:' + '(' + peopleArr[cnt].split("(")[1]); return; }
                 if(this.people[cnt].alias === this.alias) {initiaterExist = true}
                 this.people[cnt].role = "Vendor"
             }
@@ -601,9 +677,9 @@ export default {
             for(var cnt = vendorArr.length-1; cnt<peopleArr.length-1; cnt++) {
                 var tempArr = peopleArr[cnt].split("(")[0].split(" ")
                 if(tempArr.length <= 1) {this.addFeedback('notify', 'Employee Name invalid: '+ peopleArr[cnt].split("(")[0]); return;}
-                this.people[cnt].name = peopleArr[cnt].split("(")[0]
+                this.people[cnt].name = this.formatUsrName((peopleArr[cnt].split("(")[0]).trim())
                 if(peopleArr[cnt].split("(")[1] === undefined) {this.addFeedback('notify', 'Alias invalid: '+ peopleArr[cnt].split("(")[0]); return;}
-                this.people[cnt].alias = '(' + peopleArr[cnt].split("(")[1]
+                this.people[cnt].alias = ('(' + peopleArr[cnt].split("(")[1]).trim()
                 if(this.people[cnt].alias === this.alias) {initiaterExist = true}
                 this.people[cnt].role = "FTE"
             }
@@ -638,7 +714,7 @@ export default {
                     if(((error.toString()).split(':')[1]).match('400') == '400') {
                         this.addFeedback('notify', 'It seemed you have already initiated your teams\' calendar for this month.')
                     }
-                    else{this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease turn to the developer.');}
+                    else{this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease contact eyesoncalendar team.');}
                     console.log(error)
                 })
             })
@@ -682,7 +758,7 @@ export default {
             }
             if(this.addForm.alias[0] == "(" && this.addForm.alias[(this.addForm.alias).length-1] == ")") {
                 ;
-            }else { this.addForm.alias = "(" + this.addForm.alias + ")";} // bug here
+            }else { this.addForm.alias = "(" + this.addForm.alias + ")";}
 
             if(this.admin) {
                 new Promise((resolve, reject) => {
@@ -698,7 +774,7 @@ export default {
                         }
                     })
                     .catch((error) => {
-                    this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease turn to the developer.');
+                    this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease contact eyesoncalendar team.');
                     })
                 }) 
             }
@@ -720,7 +796,7 @@ export default {
                 else{this.addFeedback('notify', response.data);}
                 })
                 .catch((error)=> {
-                this.addFeedback('error', (error.toString()).split(':')[1]+ '\nPlease turn to the developer.')
+                this.addFeedback('error', (error.toString()).split(':')[1]+ '\nPlease contact eyesoncalendar team.')
                 })
             })
         },
@@ -747,7 +823,7 @@ export default {
                     }
                 })
                 .catch((error)=> {
-                this.addFeedback('error', (error.toString()).split(':')[1]+ '\nPlease turn to the developer.')
+                this.addFeedback('error', (error.toString()).split(':')[1]+ '\nPlease contact eyesoncalendar team.')
                 })
             })
         },
@@ -792,8 +868,9 @@ export default {
                     })
                     .catch((error) => {
                         console.log((error.toString()).split(':')[1])
-                        if(((error.toString()).split(':')[1]).match('404') == '404') {}//{this.addFeedback('notify', 'Sorry, we didn\'t find your team data of this month.');}
-                        else {this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease turn to the developer.');}
+                        if(((error.toString()).split(':')[1]).match('404') == '404') {return [];}
+                        //{ this.addFeedback('notify', 'Sorry, we didn\'t find your team data of this month.');}
+                        // else {this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease contact eyesoncalendar team.');}
                         return [];
                     })
                 })
@@ -805,8 +882,8 @@ export default {
                     })
                     .catch((error) => {
                         console.log((error.toString()).split(':')[1])
-                        if(((error.toString()).split(':')[1]).match('404') == '404') {this.addFeedback('notify', 'Sorry, we didn\'t find your team data of this month.');}
-                        else {this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease turn to the developer.');}
+                        if(((error.toString()).split(':')[1]).match('404') == '404') {return [];}
+                        // else {this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease contact eyesoncalendar team.');}
                         return [];
                     })
                 })
@@ -980,7 +1057,6 @@ export default {
             }
             else {return ('/api/default/' + this.globalMonth + '/ownTeamName/'+this.alias)}
         },
-        
         initPath() {
             return (
                 "/api/" +
@@ -1114,7 +1190,8 @@ export default {
     }
     .el-container .el-aside {
         border-radius: 5px;
-        background-color: #373737;
+        background-color:#373737;
+        margin-left: 45px;
     }
     .el-container .el-container {
         height: fit-content;
@@ -1144,15 +1221,16 @@ export default {
     }
     .el-aside .el-menu {
         border-right: solid 0px #373737;
-        background-color: #373737;
+        background-color: #37373782;
+        margin-left: 35px;
     }
-    .el-submenu .el-menu-item {
-        color: #fff;
+    .el-menu-item{
+        color:azure !important;
+        background-color: #37373782;
+        display: flex;
     }
     .el-submenu .el-menu-item:focus, .el-submenu .el-menu-item:hover {
-        color: #fff;
         outline: 0;
-        background-color: #262626;
     }
     .functionalButton {
         display: inline-block;
@@ -1163,9 +1241,6 @@ export default {
     .el-form-item__content {
         display:flex;
     }
-    .navigationBarII {
-        text-align: right;
-    }
     .navigationBar {
         display: inline-flexbox;
         margin-bottom: 20px;
@@ -1175,7 +1250,6 @@ export default {
         background-color:#373737;
         border-color: gray;
         margin-right: 20px;
-        margin-top: 20px;
     }
     .el-button a:-webkit-any-link {
         text-decoration: none;
@@ -1232,4 +1306,10 @@ export default {
     /* .el-table th {
         display: table-cell!important; 
     } */
+    .el-menu-item:focus, .el-menu-item:hover{
+        background-color: #409eff42 !important;
+    }
+    .el-menu-item.is-active {
+        color: #409eff !important;
+    }
 </style>

@@ -1,8 +1,11 @@
 <template>
-  <div unselectable="on" v-bind:style="{'background-color': getColor(), 'border-color': getBorderColor()}" :class="{'special':today ,'cellx': true, 'workday': true}"  v-on:click="toggle" >
-    <p v-if="!today" v-bind:style="{'color':getFontColor()}" >{{displayValue}}</p>
-    <el-badge :value="2" v-if="today">
-    <p v-bind:style="{'color':getFontColor()}" >{{displayValue}}</p>
+  <div unselectable="on" v-bind:style="{'background-color': getColor(), 'border-color': getBorderColor()}"  
+  :class="{'special':today ,'cellx': true, 'workday': !open, 'workdayII': openSign&&open}"  
+  v-on:click="toggle" >
+    <!-- <p>{{displayValue}}</p> -->
+    <p v-if="!today">{{displayValue}}</p>
+    <el-badge :value="caseNum" v-if="today" type="primary">
+      <p v-bind:style="{'height': '17px'}" >{{displayValue}}</p>
     </el-badge>
   </div>
 </template>
@@ -10,12 +13,15 @@
 <script>
 import _ from 'lodash'
 export default {
-  props: ["day", "pindex", "dindex","testparam","testparamII"],
+  props: ["day", "pindex", "dindex","testparam","testparamII", "custom", "customParam" , "openSign", "alias" ],
   data() {
     return {
-      open:false, // sign to open opertation panel
+      open: false, // sign to open opertation panel
       today: false,
       month: this.$router.currentRoute.path.split('/')[3],
+      caseNum: '',
+      borderColor: ["#ED5565", "#bada55", "#9742b3", "#5D9CEC", "#ffcc80", "#808F85"],
+      ctxColor:["#8c2230","#557037", "#403259", "#375c8c","#b36b00", "#3B4D50", "#63474D", "#360036"],
     };
   },
   mounted() {
@@ -23,105 +29,80 @@ export default {
       var date = new Date().getDate()
 
       if(month == this.month && date == this.day.day) {
-        // console.log("target:" + month + '/' + date)
-        // console.log("this:" + this.month + '/' + this.day.day)
         this.today = true
       }
+      this.getNumber();
   },
   methods: {
     /* get color */
-    getFontColor() {
-      if(this.day.workType == 'W') return this.getColor();
-      else return '#C2C4CE'
-    },
     getBorderColor() {
-      switch (this.day.workDay) {
-        case 0:
-          return "#ED5565";
-          break;
-        case 1:
-          return "#bada55";
-          break;
-        case 2:
-          return "#9742b3";
-          break;
-        case 3:
-          return "#5D9CEC";
-          break;
-        case 4:
-          return "#ffcc80";
-          break;
-        case 5:
-          return "#808F85";
-          break;
+      if(this.day.workDay < 0) {
+        return this.custom.color[-1-this.day.workDay]
       }
+      return this.borderColor[this.day.workDay]
     },
     getColor() {
-      switch (this.day.workDay) {
-        case 1:
-          return "#557037";
-          break;
-        case 0:
-          return "#8c2230";
-          break;
-        case 2:
-          return "#403259";
-          break;
-        case 3:
-          return "#375c8c";
-          break;
-        case 4:
-          return "#b36b00";
-          break;
-        case 5:
-          return "#3B4D50";
-          break;
-        case 6:
-          return "#63474D";
-          break;
-        case 7:
-          return "#360036";
-          break;
+      if(this.day.workDay < 0) {
+        return this.custom.color[-1-this.day.workDay]
       }
+      return this.ctxColor[this.day.workDay]
     },
     /* data update */
     toggle() {
-      this.open = !this.open
-      // this is stupid. Plz use multi params replace later. i m so sorry about that
+      this.open = true
+      // this is stupid. Plz use multi params replace later.
       this.$emit('customEvent',this.dindex + 1 + "@" + this.day.workType)
       // var undoStep = { path: this.apiPath, payload: this.apiPayload }; // UNDO STEP HERE -- TODO
       // this.$history.push(undoStep);
-      this.$http.post(this.apiPath, this.apiPayload);
     },
+    getNumber()  {
+      this.caseNum = '...';
+    }
+  },
+  watch: {
+    "$store.state.dailycasenumber": function(newVal) {
+      // console.log("case number changed ");
+      let newalias = this.alias.slice(1, -1);
+
+      for(let key of newVal){
+        // console.log("key alias: "+key.alias);
+        // console.log("newalias: "+newalias);
+        if(key.alias == newalias){
+          this.caseNum = (key.casenumber == 0 ? '' : key.casenumber)
+        }
+      }
+    },
+    openSign: function() {
+      if(this.openSign === false) this.open = false
+    }
   },
   computed: {
     /* get color */
     displayValue() {
       if(this.testparamII == this.dindex) {
-        this.day.workType = this.testparam
-        if (this.day.workType == "V") this.day.workDay = 0;
-        if (this.day.workType == "PH") this.day.workDay = 0;
-        if (this.day.workType == "W") this.day.workDay = 1;
-        if (this.day.workType == "MS") this.day.workDay = 1;
-        if (this.day.workType == "NS") this.day.workDay = 5;
-        if (this.day.workType == "SL") this.day.workDay = 2;
-        if (this.day.workType == "AL") this.day.workDay = 2;
-        if (this.day.workType == "H(M)") this.day.workDay = 2;// //"HMSL","HASL","HMAL","HAAL"
-        if (this.day.workType == "H(A)") this.day.workDay = 2;
-        if (this.day.workType == "T") this.day.workDay = 3;
-        if (this.day.workType == "PO") this.day.workDay = 4;
-        if (this.day.workType == "PM") this.day.workDay = 4;
-        if (this.day.workType == "HMAL") this.day.workDay = 6;
-        if (this.day.workType == "HAAL") this.day.workDay = 6;
-        if (this.day.workType == "HASL") this.day.workDay = 7;
-        if (this.day.workType == "HMSL") this.day.workDay = 7;
-        this.dbFunc()
+          this.day.workType = this.testparam
+          if (this.day.workType == "PH") {this.day.workDay = 0;}
+          else if (this.day.workType == "W") {this.day.workDay = 1;}
+          else if (this.day.workType == "MS") {this.day.workDay = 1;}
+          else if (this.day.workType == "NS") {this.day.workDay = 5;}
+          else if (this.day.workType == "SL") {this.day.workDay = 2;}
+          else if (this.day.workType == "AL") {this.day.workDay = 2;}
+          else if (this.day.workType == "H(M)"){ this.day.workDay = 2;}// //"HMSL","HASL","HMAL","HAAL"
+          else if (this.day.workType == "H(A)") {this.day.workDay = 2;}
+          else if (this.day.workType == "T") {this.day.workDay = 3;}
+          else if (this.day.workType == "PO") {this.day.workDay = 4;}
+          else if (this.day.workType == "PM") {this.day.workDay = 4;}
+          else if (this.day.workType == "HMAL") {this.day.workDay = 6;}
+          else if (this.day.workType == "HAAL") {this.day.workDay = 6;}
+          else if (this.day.workType == "HASL") {this.day.workDay = 7;}
+          else if (this.day.workType == "HMSL") {this.day.workDay = 7;}
+          else {this.day.workDay = this.customParam}
+          this.dbFunc()
       }
-      if (this.day.workType == "W") {return "W"}; // not display "W" in the calendar for there are TOO MANY WORKING DAYS
-      if (this.day.workType == "HMSL" || this.day.workType == "HMAL") return " H(M)"; // not display "W" in the calendar for there are TOO MANY WORKING DAYS
-      if (this.day.workType == "HASL" || this.day.workType == "HAAL") return " H(A)"; // not display "W" in the calendar for there are TOO MANY WORKING DAYS
-      
-      // if (this.day.workType == "PH") return " ";
+      if (this.day.workType == "W") return " "; // not display "W" in the calendar for there are TOO MANY WORKING DAYS
+      if (this.day.workType == "HMSL" || this.day.workType == "HMAL") return " H(M)";
+      if (this.day.workType == "HASL" || this.day.workType == "HAAL") return " H(A)";
+
       else return this.day.workType;
     },
     /* data update */
@@ -149,18 +130,11 @@ export default {
         this.day._id
       );
     }
-  }
+  },
 };
 </script>
 
 <style>
-.el-badge__content {
-  border: none !important;
-  background-color: #be5252 !important;
-}
-.el-badge__content.is-fixed {
-  top: 7px !important;
-}
 .cellx {
   border-radius: 2px;
   /* text-transform: uppercase; */
@@ -177,9 +151,24 @@ export default {
   border: 3px solid;
 }
 
+.workdayII {
+  font-size: 21px;
+  margin: 0px;
+  padding: 1px;
+  border: 3px solid;
+}
+
 .special.cellx.workday.dayCell {
     border-left: 5px solid #409eff;
     width: 35px !important;
+}
+
+.el-badge__content.is-fixed {
+    position: absolute;
+    top: 12px !important;
+    right: 10px;
+    -webkit-transform: translateY(-50%) translateX(100%);
+    transform: translateY(-50%) translateX(100%);
 }
 
 @media only screen and (max-width: 1600px) {

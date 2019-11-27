@@ -7,6 +7,7 @@ const store = new Vuex.Store({
   state: {
     calendar: null,
     socket: null,
+    dailycasenumber: [],
   },
   mutations: { // sync
     toggleDay(state, data) {
@@ -14,6 +15,9 @@ const store = new Vuex.Store({
       state.calendar.calendar[data.personkey].days[data.toggleevent.index].work = !data.toggleevent.item.work;
       state.socket.emit('updateCalendar', state.calendar);
     },
+    getDailyCaseNumber(state, number){
+      state.dailycasenumber = number;
+    }
   },
   actions: { // async
     toggleWork({ commit }, data) {
