@@ -1,5 +1,5 @@
-const fs = require('fs')
-const json = require('../newConvertCsv.js')
+// const fs = require('fs')
+// const json = require('../newConvertCsv.js')
 const models = require('../models/NewMonth')
 const Month = models.Month
 const errorMsg = 'Record not found'
@@ -15,7 +15,7 @@ function newMonth (year, month, pod, daylock, people, customDayType) {
     pod: pod,
     daylock: daylock,
     people: people,
-    customDayType: customDayType,
+    customDayType: customDayType
   })
 }
 
@@ -55,7 +55,7 @@ function findPrinciple (month, alias) {
 
 /* Function to insert records to a given month */
 function incrementMonth (month, people) {
-  console.log('Incremental push')
+  // console.log('Incremental push')
   people.forEach(person => {
     month.people.push(person)
   })
@@ -64,7 +64,7 @@ function incrementMonth (month, people) {
 
 /* Function to update records from a given month */
 function updateMonth (month, people) {
-  console.log('updateMonth')
+  // console.log('updateMonth')
   people.forEach(person => {
     month.people.forEach(p => {
       if (p.alias === person.alias) {
@@ -77,7 +77,7 @@ function updateMonth (month, people) {
 
 /* Function to delete records from a given month */
 function decrementMonth (month, alias) {
-  console.log('decrementMonth')
+  // console.log('decrementMonth')
   var position = 0
   var flag = 0
   month.people.forEach(person => {
@@ -91,48 +91,57 @@ function decrementMonth (month, alias) {
 }
 
 async function modifyTemplate (year, month, peopleSrc) {
-  if (typeof (year) !== 'number' ||
-   typeof (month) !== 'number') { return }
-  var filepath = './uploads/calendarTemplate.txt'
-  var days = new Date(year, month, 0).getDate()
-  var monthArr = ['January', 'February', 'March', 'April',
-    'May', 'June', 'July', 'August', 'September', 'October',
-    'November', 'December']
-  var name = monthArr[month - 1]
-  var str = ''
-  str += name
-  for (var i = 0; i < days; i++) {
-    str += ','
-  }
-  str += '\nEmployee Name'
-  for (i = 0; i < days; i++) {
-    str += ',' + (i + 1).toString()
-  }
-  str += '\n%DefaultName% (DefaultAlias-DefaultRole-DefaultPrinciple)'
-  for (i = 0; i < days; i++) {
-    var tmp = year + '-' + month + '-' + (i + 1)
-    var dayptr = new Date(tmp).getDay().toString()
-    var type = ''
-    if (dayptr === '0' || dayptr === '6') {
-      type = 'PH'
-    } else {
-      type = 'W'
-    }
-    str += ',' + type
-  }
-  // console.log(str)
-  fs.writeFile(filepath, str,
-    { flag: 'w', encoding: 'utf-8', mode: '0666' },
-    function (e) { console.log(e) })
+  if (typeof (year) !== 'number' || typeof (month) !== 'number')
+  { return }
+  // init basic template per person per day
+  var people = [{
+    alias: 'DefaultAlias',
+    name: '%DefaultName%',
+    role: 'DefaultRole',
+    principle: 'DefaultPrinciple',
+    days: [{
+      day: 1,
+      workType: '',
+      workDay: 0
+    }]
+  }]
 
-  var src = await fs.createReadStream(filepath)
-  var people = await json(src)
-  console.log(peopleSrc[0].alias);
+  // init template for a day (fill real data)
+  var dateFormat_0 = year + '-' + month + '-' + people[0].days[0].day
+  var weekDay_0 = new Date(dateFormat_0).getDay().toString()
+  people[0].days[0].day = 1
+  if (weekDay_0 === '0' || weekDay_0 === '6') {
+    people[0].days[0].workType = 'PH'
+    people[0].days[0].workDay = '0'
+  } else {
+    people[0].days[0].workType = 'W'
+    people[0].days[0].workDay = '1'
+  }
+
+  // init template for a month
+  var daysLength = new Date(year, month, 0).getDate()
+  var i
+  for (i = 1; i < daysLength; i++) {
+    people[0].days[i] = Object.assign({}, people[0].days[i - 1]) // shallow copy
+    people[0].days[i].day = i + 1
+    var dateFormat = year + '-' + month + '-' + people[0].days[i].day
+    var weekDay = new Date(dateFormat).getDay().toString()
+    if (weekDay === '0' || weekDay === '6') {
+      people[0].days[i].workType = 'PH'
+      people[0].days[i].workDay = '0'
+    } else {
+      people[0].days[i].workType = 'W'
+      people[0].days[i].workDay = '1'
+    }
+  }
+
+  // init template for a person (fill real data)
   people[0].alias = peopleSrc[0].alias
   people[0].name = peopleSrc[0].name
   people[0].role = peopleSrc[0].role
   people[0].principle = peopleSrc[0].principle
 
+  // init template for the whole team (fill real data)
   for (var cnt = 1; cnt < (peopleSrc).length; cnt++) {
     people[cnt] = Object.assign({}, people[0]) // shallow copy
     people[cnt].alias = peopleSrc[cnt].alias
@@ -319,7 +328,7 @@ const initCalendar = async (ctx) => {
   await modifyTemplate(Number(p.year), Number(p.month), b.people)
   // eslint-disable-next-line no-array-constructor
   var daylock = new Array()
-  var payload = newMonth(p.year, p.month, p.pod, daylock, people, 
+  var payload = newMonth(p.year, p.month, p.pod, daylock, people,
     { Type: ['C1', 'C2'], color: ['#007EA7', '#003459'] })
   try {
     await payload.save()
@@ -360,12 +369,12 @@ const setCustomDayType = async (ctx) => {
   var b = ctx.request.body
   try {
     var currentMonth =
-      await Month.findOne({year: p.year, month: p.month, pod: p.pod})
-    currentMonth.customDayType = b.customDayType;
+      await Month.findOne({ year: p.year, month: p.month, pod: p.pod })
+    currentMonth.customDayType = b.customDayType
     const payload = currentMonth
     await payload.save()
     ctx.body = 'success'
-  }catch(e) {
+  } catch (e) {
     console.log(e)
     ctx.body = e
   }
