@@ -120,3 +120,4 @@ function startServer () {
 }
 
 exports.startServer = startServer
+exports.app = app
