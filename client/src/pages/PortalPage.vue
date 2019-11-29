@@ -463,7 +463,7 @@ export default {
                     globalform = this.initForm
                 }
                 try {
-                    let res = await this.$http.get(`/api/${globalform.TeamName}/${globalform.Month}`);
+                    let res = await _.debounce(()=>{this.$http.get(`/api/${globalform.TeamName}/${globalform.Month}`)}, 2000)
                     this.socket = io({
                         query: {
                         path: this.teamForm.Month,
@@ -864,7 +864,7 @@ export default {
                 new Promise((resolve, reject) => {
                     this.$http.get(this.getTeamPathInit)
                     .then((response)=> {
-                    this.links = response.data;
+                        this.links = response.data;
                     })
                     .catch((error) => {
                         console.log((error.toString()).split(':')[1])
@@ -878,7 +878,7 @@ export default {
                 new Promise((resolve, reject) => {
                     this.$http.get(this.getTeamPath)
                     .then((response)=> {
-                    this.links = response.data;
+                        this.links = response.data;
                     })
                     .catch((error) => {
                         console.log((error.toString()).split(':')[1])
