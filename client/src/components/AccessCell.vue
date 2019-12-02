@@ -107,16 +107,14 @@ export default {
 
         /* Search team name */
         loadTeamName () {
-            new Promise((resolve, reject) => {
-                this.$http.get(this.getTeamApiPath)
-                .then((response)=> {
-                this.links = response.data;
-                })
-                .catch((error) => {
-                    console.log(error)
-                    // this.addFeedback('error', 'System Error. Please turn to the developer.');
-                    return [];
-                })
+            this.$http.get(this.getTeamApiPath)
+            .then((response)=> {
+            this.links = response.data;
+            })
+            .catch((error) => {
+                console.log(error)
+                // this.addFeedback('error', 'System Error. Please turn to the developer.');
+                return [];
             })
         },
 
@@ -255,8 +253,7 @@ export default {
             var that = this
             var apipath = '/api/getpod/' + new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + this.alias
             console.log(apipath)
-            return new Promise((resolve, reject) => {
-                this.$http.get(apipath)
+            return this.$http.get(apipath)
                 .then((response)=> {
                     console.log(response.data)
                     if(!(this.podSelect) && this.manualLoginBtn) {
@@ -282,8 +279,7 @@ export default {
                 .catch((error) => {
                     console.log(error);
                     // this.addFeedback('error', 'System Error. Please turn to the developer.');
-                })
-            }) 
+                }) 
         },
         manualLoginMtd() {
             var that = this

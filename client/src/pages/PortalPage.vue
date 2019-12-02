@@ -463,10 +463,11 @@ export default {
                     globalform = this.initForm
                 }
                 try {
-                    let res = await _.debounce(()=>{this.$http.get(`/api/${globalform.TeamName}/${globalform.Month}`)}, 2000)
+                    let res = await this.$http.get(`/api/${globalform.TeamName}/${globalform.Month}`)
+
                     this.socket = io({
                         query: {
-                        path: this.teamForm.Month,
+                            path: this.teamForm.Month,
                         },
                     });
                     this.socket.on("update", data => {
@@ -499,10 +500,8 @@ export default {
                     }
                 } catch (error) {
                     console.log(error);
-                    if(((error.toString()).split(':')[1]).match('404') == '404' && this.topic === 0) {
-                        //
-                    }else if(((error.toString()).split(':')[1]).match('404') == '404') {
-                        this.addFeedback('notify', 'Sorry, we didn\'t find your team data of this month. Please initiate your team & calendar first.')
+                    if(((error.toString()).split(':')[1]).match('404') == '404') {
+                        // this.addFeedback('notify', 'Sorry, we didn\'t find your team data of this month. Please initiate your team & calendar first.')
                     }else if(((error.toString()).split(':')[1]).match('sort') == 'sort' ) {
                         //
                     }else if(((error.toString()).split(':')[1]).match('500') == '500') {
@@ -543,11 +542,10 @@ export default {
             this.teamForm.updateCustomDayType.customDayType.color[1] ||
              this.teamForm.customDayType.customDayType.color[1]
 
-            new Promise((resolve, reject)=>{
-                this.$http.post("api/" + this.teamForm.TeamName +
-                 "/setCustomDayType/"+this.teamForm.Month,
-                 this.teamForm.updateCustomDayType)
-            })
+            this.$http.post("api/" + this.teamForm.TeamName +
+                "/setCustomDayType/"+this.teamForm.Month,
+                this.teamForm.updateCustomDayType)
+
         },
 
         goCalendar() {
@@ -703,102 +701,120 @@ export default {
                     if(person.alias == '(' + ta.split('(')[1]){person.principle = "TA";}
                 })
             });
-            new Promise((resolve, reject)=>{
-                this.$http.post(this.initPath, this.initPayload)
-                .then((response)=> {
-                    if(response.data == "success") {
-                    this. addFeedback('success', 'Team Added to Calendar')}
-                })
-                .catch((error)=>{
-                    // potential bug caution!!!
-                    if(((error.toString()).split(':')[1]).match('400') == '400') {
-                        this.addFeedback('notify', 'It seemed you have already initiated your teams\' calendar for this month.')
-                    }
-                    else{this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease contact eyesoncalendar team.');}
-                    console.log(error)
-                })
+            this.$http.post(this.initPath, this.initPayload)
+            .then((response)=> {
+                if(response.data == "success") {
+                this. addFeedback('success', 'Team Added to Calendar')}
             })
+            .catch((error)=>{
+                // potential bug caution!!!
+                if(((error.toString()).split(':')[1]).match('400') == '400') {
+                    this.addFeedback('notify', 'It seemed you have already initiated your teams\' calendar for this month.')
+                }
+                else{this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease contact eyesoncalendar team.');}
+                console.log(error)
+            })
+
         },
 
         addPerson() {
             if(this.addForm.alias == "") {
-                this.addFeedback('notify', 'Please fill the alias.')
-            return;
+                this.addFeedback('notify', 'Please fill the alias.'); return
             }
             if(this.addTMTA === false && this.addForm.name == "") {
-                this.addFeedback('notify', 'Please fill the name.')
-            return;
+                this.addFeedback('notify', 'Please fill the name.'); return
+                // we dont need name to promote an engineer
             }
+
+            // format name
             var nameArr = this.addForm.name.toString().toLowerCase().trim().split(" ");
             if( nameArr.length > 1) { 
-                // apply name to default format: First Name + Last Name and Capital the first letter
-                nameArr[0] = (nameArr[0].toString())[0].toUpperCase() + (nameArr[0].toString()).substr(1);
-                nameArr[nameArr.length - 1] = nameArr[nameArr.length - 1][0].toUpperCase() + nameArr[nameArr.length - 1].substr(1);
-                this.addForm.name = nameArr[0] + " " + nameArr[nameArr.length - 1];
-            }else if(this.addTMTA === false) {
-                this.addFeedback('notify', 'Name length invalid. eg. Danielle Zhao')
-                return;
-            }
-            // role
-            if(this.addForm.role == "FTE" || this.addForm.role == "fte"|| this.addForm.role == "Fte" || this.addForm.role == "FTe"){
-                this.addForm.role = "FTE";
-            }else if(this.addForm.role == "Vendor" || this.addForm.role == "vendor" || this.addForm.role == "v") {
-                this.addForm.role = "Vendor"
-            }else if(this.addTMTA === false) {
-                this.addFeedback('notify', "Role invalid. Please use 'FTE' or 'Vendor'")
-            return;
-            }
-            // alias
-            this.addForm.alias = this.addForm.alias.trim()
-            if(this.addForm.role == "Vendor") {
-                if(this.addForm.alias.toString().match('v-') != 'v-') {
-                    this.addFeedback('notify', 'vendor alias with no \'v-\' is invalid.')
+                var firstName = (nameArr[0].toString())[0].toUpperCase() +
+                 (nameArr[0].toString()).substr(1);
+                var lastName = nameArr[nameArr.length - 1][0].toUpperCase() +
+                 nameArr[nameArr.length - 1].substr(1);
+                this.addForm.name = firstName + " " + lastName;
+            }else {
+                if(this.addTMTA === false) {
+                    this.addFeedback('notify', 'Name length invalid. eg. Danielle Zhao')
                     return;
                 }
             }
-            if(this.addForm.alias[0] == "(" && this.addForm.alias[(this.addForm.alias).length-1] == ")") {
+            // role
+            if(this.addForm.role == "FTE" || this.addForm.role == "fte" ||
+             this.addForm.role == "Fte" || this.addForm.role == "FTe"){
+                this.addForm.role = "FTE";
+            }else if(this.addForm.role == "Vendor" || this.addForm.role == "vendor" ||
+             this.addForm.role == "v") {
+                this.addForm.role = "Vendor"
+            }else if(this.addTMTA === false) {
+                this.addFeedback('notify', "Role invalid. Please use 'FTE' or 'Vendor'")
+                return;
+            }
+            // alias
+            var aliasToken = this.addForm.alias.trim()
+            this.addForm.role = aliasToken
+            if(this.addForm.role == "Vendor") {
+                if(this.addForm.alias.toString().match('v-') != 'v-') {
+                    this.addFeedback('notify',
+                     'vendor alias with no \'v-\' is invalid.')
+                    return;
+                }
+            }
+            
+            // check parentheses
+            if(this.addForm.alias[0] == "(" &&
+             this.addForm.alias[(this.addForm.alias).length-1] == ")") {
                 ;
             }else { this.addForm.alias = "(" + this.addForm.alias + ")";}
 
             if(this.admin) {
-                new Promise((resolve, reject) => {
-                    this.$http.post(this.addPath, this.addPayload)
-                    .then((response)=> {
-                        if(response.data == 'Person is Added to the Team' || response.data == 'Permission is Added to the Person') { 
-                            // the below lines is a stupid way to sync the display memeber which should be replaced by stocket.io later QwQ
-                            this.teamForm.Month = this.teamForm.Month.split('/')[0] + '/' + (this.teamForm.Month.split('/')[1]-1).toString()
-                            this.teamForm.Month = this.teamForm.Month.split('/')[0] + '/' + (this.teamForm.Month.split('/')[1]-(-1)).toString()                            
-                            this. addFeedback('success', response.data) }
-                        else{
-                            this.addFeedback('notify', response.data);   
-                        }
-                    })
-                    .catch((error) => {
-                    this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease contact eyesoncalendar team.');
-                    })
-                }) 
+                this.$http.post(this.addPath, this.addPayload)
+                .then((response)=> {
+                    if(response.data == 'Person is Added to the Team' ||
+                        response.data == 'Permission is Added to the Person') { 
+                        // the below lines is a stupid way to sync the display memeber 
+                        // which should be replaced by stocket.io later >_<
+                        this.teamForm.Month = this.teamForm.Month.split('/')[0] +
+                            '/' + (this.teamForm.Month.split('/')[1]-1).toString()
+                        this.teamForm.Month = this.teamForm.Month.split('/')[0] +
+                            '/' + (this.teamForm.Month.split('/')[1]-(-1)).toString()                            
+                        this. addFeedback('success', response.data) }
+                    else{
+                        this.addFeedback('notify', response.data);   
+                    }
+                })
+                .catch((error) => {
+                this.addFeedback('error', (error.toString()).split(':')[1] +
+                    '\nPlease contact eyesoncalendar team.');
+                })
             }
         },
         delPerson() {
-            if(this.delForm.alias[0] == "(" && this.delForm.alias[(this.delForm.alias).length-1] == ")") {
+            if(this.delForm.alias[0] == "(" &&
+             this.delForm.alias[(this.delForm.alias).length-1] == ")") {
                 ;
             }else {
                 this.delForm.alias = "(" + this.delForm.alias + ")";
             }
-            return new Promise((resolve, reject) => {
-                this.$http.post(this.delPath, this.delPayload)
-                .then((response)=> {
-                if(response.data == 'Person is Removed from the Team'|| response.data == 'Permission is Removed from the Person')  {
-                    // the below lines is a stupid way to sync the display memeber which should be replaced by stocket.io later QwQ
-                    this.teamForm.Month = this.teamForm.Month.split('/')[0] + '/' + (this.teamForm.Month.split('/')[1]-1).toString()
-                    this.teamForm.Month = this.teamForm.Month.split('/')[0] + '/' + (this.teamForm.Month.split('/')[1]-(-1)).toString()                           
-                    this.addFeedback('success', response.data)}
-                else{this.addFeedback('notify', response.data);}
-                })
-                .catch((error)=> {
-                this.addFeedback('error', (error.toString()).split(':')[1]+ '\nPlease contact eyesoncalendar team.')
-                })
+            this.$http.post(this.delPath, this.delPayload)
+            .then((response)=> {
+            if(response.data == 'Person is Removed from the Team' ||
+                response.data == 'Permission is Removed from the Person')  {
+                // the below lines is a stupid way to sync the display memeber
+                // which should be replaced by stocket.io later >_<
+                this.teamForm.Month = this.teamForm.Month.split('/')[0] +
+                    '/' + (this.teamForm.Month.split('/')[1]-1).toString()
+                this.teamForm.Month = this.teamForm.Month.split('/')[0] +
+                    '/' + (this.teamForm.Month.split('/')[1]-(-1)).toString()                           
+                this.addFeedback('success', response.data)}
+            else{this.addFeedback('notify', response.data);}
             })
+            .catch((error)=> {
+            this.addFeedback('error', (error.toString()).split(':')[1] +
+                '\nPlease contact eyesoncalendar team.')
+            })
+
         },
         sftPerson() {
             if(this.sftForm.alias[0] === '(') {
@@ -811,21 +827,26 @@ export default {
             }
             this.sftForm.alias = '(' + this.sftForm.alias + ')'
             // console.log(this.apiPathSftPerson)
-            return new Promise((resolve, reject) => {
-                this.$http.post(this.sftPath, this.sftPayload)
-                .then((response) => {
-                    // console.log("shift success")
-                    // the below lines is a stupid way to sync the display memeber which should be replaced by stocket.io later QwQ
-                    this.teamForm.Month = this.teamForm.Month.split('/')[0] + '/' + (this.teamForm.Month.split('/')[1]-1).toString()
-                    this.teamForm.Month = this.teamForm.Month.split('/')[0] + '/' + (this.teamForm.Month.split('/')[1]-(-1)).toString()
-                    if(response.data === 'No Record') { this.addFeedback('notify', 'Person Not Exist') } else { 
-                        this.addFeedback('success', 'Shift is Ready')
-                    }
-                })
-                .catch((error)=> {
-                this.addFeedback('error', (error.toString()).split(':')[1]+ '\nPlease contact eyesoncalendar team.')
-                })
+            this.$http.post(this.sftPath, this.sftPayload)
+            .then((response) => {
+                // console.log("shift success")
+                // the below lines is a stupid way to sync the display memeber 
+                // which should be replaced by stocket.io later >_<
+                this.teamForm.Month = this.teamForm.Month.split('/')[0] +
+                    '/' + (this.teamForm.Month.split('/')[1]-1).toString()
+                this.teamForm.Month = this.teamForm.Month.split('/')[0] +
+                    '/' + (this.teamForm.Month.split('/')[1]-(-1)).toString()
+                if(response.data === 'No Record') { 
+                    this.addFeedback('notify', 'Person Not Exist')
+                } else { 
+                    this.addFeedback('success', 'Shift is Ready')
+                }
             })
+            .catch((error)=> {
+            this.addFeedback('error', (error.toString()).split(':')[1] +
+                '\nPlease contact eyesoncalendar team.')
+            })
+
         },
 
         addFeedback(type, msg) {
@@ -861,31 +882,29 @@ export default {
         /* Start-- load team name for auto-complete component */
         loadTeamName () {
             if(this.topic === 0) {
-                new Promise((resolve, reject) => {
-                    this.$http.get(this.getTeamPathInit)
-                    .then((response)=> {
-                        this.links = response.data;
-                    })
-                    .catch((error) => {
-                        console.log((error.toString()).split(':')[1])
-                        if(((error.toString()).split(':')[1]).match('404') == '404') {return [];}
-                        //{ this.addFeedback('notify', 'Sorry, we didn\'t find your team data of this month.');}
-                        // else {this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease contact eyesoncalendar team.');}
-                        return [];
-                    })
+                this.$http.get(this.getTeamPathInit)
+                .then((response)=> {
+                    this.links = response.data;
+                })
+                .catch((error) => {
+                    console.log((error.toString()).split(':')[1])
+                    if(((error.toString()).split(':')[1]).match('404') == '404') {return [];}
+                    //{ this.addFeedback('notify', 'Sorry, we didn\'t find your team data of this month.');}
+                    // else {this.addFeedback('error', (error.toString()).split(':')[1] +
+                    // '\nPlease contact eyesoncalendar team.');}
+                    return [];
                 })
             }else {
-                new Promise((resolve, reject) => {
-                    this.$http.get(this.getTeamPath)
-                    .then((response)=> {
-                        this.links = response.data;
-                    })
-                    .catch((error) => {
-                        console.log((error.toString()).split(':')[1])
-                        if(((error.toString()).split(':')[1]).match('404') == '404') {return [];}
-                        // else {this.addFeedback('error', (error.toString()).split(':')[1] + '\nPlease contact eyesoncalendar team.');}
-                        return [];
-                    })
+                this.$http.get(this.getTeamPath)
+                .then((response)=> {
+                    this.links = response.data;
+                })
+                .catch((error) => {
+                    console.log((error.toString()).split(':')[1])
+                    if(((error.toString()).split(':')[1]).match('404') == '404') {return [];}
+                    // else {this.addFeedback('error', (error.toString()).split(':')[1] +
+                    // '\nPlease contact eyesoncalendar team.');}
+                    return [];
                 })
             }
         },

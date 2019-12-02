@@ -542,15 +542,13 @@ export default {
         // location.reload();
     },
     loadTeamName () {
-      new Promise((resolve, reject) => {
-        this.$http.get(this.getTeamApiPath)
-        .then((response)=> {
-          this.links = response.data;
-        })
-        .catch((error) => {
-            this.addFeedback('error', 'System Error. Please contact eyesoncalendar team.');
-            return [];
-        })
+      this.$http.get(this.getTeamApiPath)
+      .then((response)=> {
+        this.links = response.data;
+      })
+      .catch((error) => {
+          this.addFeedback('error', 'System Error. Please contact eyesoncalendar team.');
+          return [];
       })
     },
     querySearchAsync(queryString, cb) {
