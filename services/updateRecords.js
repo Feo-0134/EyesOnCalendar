@@ -62,19 +62,6 @@ function incrementMonth (month, people) {
   return month
 }
 
-/* Function to update records from a given month */
-function updateMonth (month, people) {
-  // console.log('updateMonth')
-  people.forEach(person => {
-    month.people.forEach(p => {
-      if (p.alias === person.alias) {
-        p.principle = person.principle
-      }
-    })
-  })
-  return month
-}
-
 /* Function to delete records from a given month */
 function decrementMonth (month, alias) {
   // console.log('decrementMonth')
@@ -88,6 +75,19 @@ function decrementMonth (month, alias) {
     position = position + 1
   })
   if (flag === 0) { return -1 } else { return month }
+}
+
+/* Function to update records from a given month */
+function updateMonth (month, people) {
+  // console.log('updateMonth')
+  people.forEach(person => {
+    month.people.forEach(p => {
+      if (p.alias === person.alias) {
+        p.principle = person.principle
+      }
+    })
+  })
+  return month
 }
 
 async function modifyTemplate (year, month, peopleSrc) {
@@ -255,28 +255,26 @@ const addPerson = async (ctx) => {
    await modifyTemplate(Number(p.year), Number(p.month), b.people)
   var payload
   if (b.principle === 'TM' || b.principle === 'TA') {
-  // add TM/TA role to a team member
+    // add TM/TA role to a team member
     if (!findRecord(currentMonth, b.alias)) {
       ctx.body =
       'This is not a team member. Please add him to your team first'
       return
     } else if (findPrinciple(currentMonth, b.alias)) {
-      ctx.body = 'This person is already TM/TA'
-      return
+      ctx.body = 'This person is already TM/TA'; return
     } else {
       payload = updateMonth(currentMonth, people)
       ctx.body = 'Permission is Added to the Person'
     }
-  } else { // add a team member
+  } else {
+    // add a team member
     if (findRecord(currentMonth, b.alias)) {
-      ctx.body = 'Record exist'
-      return
+      ctx.body = 'Record exist'; return
     } else {
       payload = incrementMonth(currentMonth, people)
       ctx.body = 'Person is Added to the Team'
     }
   }
-
   try {
     await payload.save()
   } catch (e) {
@@ -307,11 +305,13 @@ const removePerson = async (ctx) => {
       ctx.body = 'Permission is Removed from the Person'
     }
   } else { // delete a team member
-    payload = await decrementMonth(currentMonth, b.alias)
-    ctx.body = 'Person is Removed from the Team'
-    if (payload === -1) { ctx.body = 'Record not exist'; return }
+    if (!findRecord(currentMonth, b.alias)) {
+      ctx.body = 'Record not exist'; return
+    } else {
+      payload = await decrementMonth(currentMonth, b.alias)
+      ctx.body = 'Person is Removed from the Team'
+    }
   }
-
   try {
     await payload.save()
   } catch (e) {
