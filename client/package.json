@@ -11,7 +11,7 @@
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^1.3.0",
     "@websanova/vue-upload": "^0.2.14-beta",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "element-ui": "^2.10.1",
     "font-awesome": "^4.7.0",
     "lodash": "^4.17.11",
